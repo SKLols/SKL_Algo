@@ -1,0 +1,504 @@
+Symbol,Price,Trend_Pass,MA50,MA150,MA200,Pct_Above_52w_Low,Pct_Below_52w_High,Is_VCP,VCP_Quality,Num_Contractions,Final_Contraction,Volume_Dry_Up,Vol_Ratio,Pivot_Price
+MMM,155.51,False,155.55,159.2,157.42,25.6,10.5,False,Filtered (trend template failed),6,0.62,True,0.63,152.79
+AOS,65.9,False,70.7,69.37,69.58,9.0,18.1,False,Filtered (trend template failed),6,2.65,True,0.88,67.27
+ABT,96.61,False,107.35,118.77,121.16,1.2,28.6,False,Fail,6,3.15,True,0.83,102.91
+ABBV,211.14,False,217.45,220.25,213.8,28.1,11.6,False,Filtered (trend template failed),6,2.79,True,0.81,210.65
+ACN,196.93,False,203.63,237.44,243.85,9.7,38.2,False,Fail,6,10.07,True,0.77,199.64
+ADBE,245.03,False,254.06,307.94,320.54,8.7,41.8,False,Fail,6,7.78,True,0.78,244.36
+AMD,277.07,False,212.11,215.85,202.45,223.8,0.4,False,Filtered (trend template failed),6,11.0,False,1.19,220.27
+AES,14.47,False,14.9,14.2,13.81,56.1,16.3,False,Fail,6,0.28,True,0.56,14.43
+AFL,115.29,False,111.42,109.89,108.04,19.4,1.3,False,Fail,6,6.82,False,1.16,113.07
+A,120.54,False,118.26,132.7,129.24,21.2,23.0,False,Filtered (trend template failed),6,3.47,True,0.85,113.94
+APD,292.63,False,284.46,265.61,270.7,28.5,2.0,False,Fail,6,0.91,False,0.95,298.71
+ABNB,141.74,False,128.85,127.19,128.1,27.1,0.3,False,Filtered (trend template failed),6,7.33,True,0.76,131.4
+AKAM,95.12,False,104.52,90.77,87.39,34.9,20.2,False,Fail,6,24.71,False,1.25,118.0
+ALB,196.35,True,173.19,139.21,123.25,280.1,8.9,True,B (2-step valid VCP),6,4.98,True,0.74,181.39
+ARE,48.75,False,49.21,56.15,60.94,14.4,41.6,False,Filtered (trend template failed),6,4.97,False,0.99,44.84
+ALGN,191.97,False,179.81,157.81,159.11,53.7,7.3,False,Filtered (trend template failed),6,3.39,True,0.67,172.73
+ALLE,145.94,False,153.1,162.23,162.16,19.3,18.5,False,Fail,6,5.48,True,0.89,147.21
+LNT,72.35,False,71.14,67.63,66.54,25.9,1.9,False,Fail,6,5.92,False,0.91,73.72
+ALL,216.28,False,208.51,204.37,202.79,18.0,0.9,False,Filtered (trend template failed),6,2.43,True,0.85,207.76
+GOOGL,338.23,True,307.71,296.44,272.22,129.8,1.5,True,"C (Structure valid, needs tightening)",6,12.04,False,0.98,310.92
+GOOG,335.66,True,306.9,296.59,272.53,124.8,2.6,True,"C (Structure valid, needs tightening)",6,11.72,False,1.1,309.41
+MO,64.4,False,65.83,61.41,61.02,22.4,6.1,False,Filtered (trend template failed),6,2.3,False,1.13,67.46
+AMZN,254.01,False,214.31,225.27,225.6,51.8,0.0,False,Fail,6,5.84,True,0.87,211.71
+AMCR,42.02,False,43.56,41.98,42.79,10.3,15.8,False,Filtered (trend template failed),6,4.08,True,0.73,42.37
+AEE,111.82,False,109.94,104.05,102.44,22.0,2.2,False,Fail,6,6.03,False,1.11,114.32
+AEP,133.27,True,130.61,120.53,117.3,38.5,2.8,False,Fail,6,6.33,False,1.47,137.15
+AXP,338.66,False,317.22,342.07,334.22,41.1,11.5,False,Fail,6,3.22,True,0.82,301.05
+AIG,79.07,False,77.04,77.56,77.94,10.6,8.2,False,Fail,6,3.34,False,1.11,75.47
+AMT,181.43,False,179.25,179.03,185.73,9.5,19.7,False,Filtered (trend template failed),6,1.53,True,0.86,179.15
+AWK,130.38,False,134.02,132.53,134.44,6.8,10.5,False,Filtered (trend template failed),6,2.49,True,0.78,139.25
+AMP,462.55,False,461.53,475.63,485.02,7.5,15.0,False,Fail,6,4.76,True,0.79,451.89
+AME,236.67,True,225.6,207.49,201.18,53.4,1.8,False,Fail,6,0.4,True,0.73,234.91
+AMGN,354.99,False,363.3,330.1,319.42,39.6,8.5,False,Fail,6,3.94,False,0.93,355.6
+APH,151.29,True,137.28,135.62,128.29,139.6,8.8,False,Fail,6,8.82,False,1.02,130.67
+ADI,369.46,True,331.13,284.35,272.38,114.4,0.0,False,Fail,6,5.88,True,0.87,351.36
+AON,335.12,False,325.27,341.07,346.53,8.1,10.7,False,Fail,6,5.21,False,1.1,329.76
+APA,34.18,False,34.51,27.65,25.72,133.9,23.0,False,Fail,6,6.85,False,1.46,43.02
+APO,124.74,False,113.55,127.54,130.81,24.4,19.1,False,Filtered (trend template failed),6,6.41,True,0.63,111.42
+AAPL,271.57,False,260.58,262.4,251.83,41.2,5.0,False,Filtered (trend template failed),6,0.64,True,0.85,260.49
+AMAT,394.38,True,358.22,285.7,258.75,193.5,1.3,True,"C (Structure valid, needs tightening)",6,13.6,False,0.96,399.49
+APP,482.59,False,429.6,554.45,520.05,111.5,34.2,False,Filtered (trend template failed),6,8.13,True,0.86,412.68
+APTV,61.23,False,71.29,77.72,76.56,20.7,30.9,False,Fail,6,17.98,False,1.08,70.98
+ACGL,97.99,False,96.87,93.49,92.54,15.7,3.9,False,Filtered (trend template failed),6,2.9,False,0.97,98.84
+ADM,66.39,False,69.38,63.38,61.72,49.0,10.1,False,Fail,6,8.73,False,1.67,73.83
+ARES,119.94,False,113.0,142.02,150.84,26.0,36.1,False,Filtered (trend template failed),6,7.92,True,0.86,109.1
+ANET,162.93,False,136.16,137.19,134.24,140.8,0.0,False,Fail,6,16.82,True,0.86,139.62
+AJG,223.35,False,217.25,249.53,261.95,9.4,35.3,False,Filtered (trend template failed),6,4.45,True,0.83,216.74
+AIZ,228.8,False,222.05,223.17,216.99,26.4,5.6,False,Filtered (trend template failed),6,1.95,True,0.7,223.69
+T,26.47,False,27.6,25.86,26.22,16.3,8.1,False,Fail,6,6.28,False,1.07,28.8
+ATO,185.24,False,183.37,174.03,170.04,24.4,3.7,False,Fail,6,4.29,False,1.35,192.29
+ADSK,243.78,False,239.72,277.93,283.51,11.6,25.4,False,Fail,6,9.23,False,1.21,240.65
+ADP,199.84,False,209.25,245.48,258.45,5.9,37.3,False,Fail,6,8.12,True,0.74,205.47
+AZO,3599.53,False,3574.71,3713.42,3777.2,10.9,17.3,False,Filtered (trend template failed),6,2.33,False,0.91,3548.19
+AVB,173.9,False,170.18,175.93,179.26,9.3,14.9,False,Filtered (trend template failed),6,1.74,True,0.82,161.85
+AVY,173.53,False,179.08,175.25,174.4,11.3,11.7,False,Filtered (trend template failed),6,3.24,True,0.88,175.31
+AXON,403.0,False,459.5,571.53,619.25,16.5,53.7,False,Fail,6,31.96,False,0.95,508.41
+BKR,59.72,False,60.94,52.65,50.16,72.1,8.5,False,Filtered (trend template failed),6,4.96,False,0.97,63.42
+BALL,65.17,True,63.1,54.78,54.75,41.4,3.5,True,A (3-step valid VCP),6,1.84,True,0.86,63.6
+BAC,54.4,False,50.54,51.84,50.7,50.7,4.4,False,Filtered (trend template failed),6,3.65,True,0.8,48.75
+BAX,18.98,False,18.56,19.78,21.25,20.1,39.7,False,Filtered (trend template failed),6,1.07,True,0.73,16.8
+BDX,159.51,False,164.51,154.93,152.13,25.7,13.4,False,Filtered (trend template failed),6,1.83,True,0.86,157.09
+BRK-B,478.63,False,488.33,493.08,490.19,4.3,11.3,False,Filtered (trend template failed),6,0.59,True,0.82,485.2
+BBY,65.06,False,63.67,69.38,69.09,15.2,20.3,False,Fail,6,5.7,True,0.79,64.53
+TECH,59.29,False,56.06,59.26,57.88,27.6,16.8,False,Filtered (trend template failed),6,3.32,True,0.73,52.7
+BIIB,177.35,False,186.07,171.04,161.73,53.8,11.8,False,Filtered (trend template failed),6,3.85,False,1.12,179.9
+BLK,1063.95,False,1011.87,1066.47,1074.22,27.2,10.6,False,Filtered (trend template failed),6,4.84,False,0.92,981.35
+BX,131.35,False,117.44,141.48,147.44,28.6,28.9,False,Filtered (trend template failed),6,2.39,True,0.74,114.99
+XYZ,71.46,False,59.52,65.79,68.06,53.6,11.9,False,Fail,6,8.48,True,0.63,61.17
+BK,136.73,True,120.43,114.79,110.97,87.4,0.0,True,B (2-step valid VCP),6,2.82,True,0.76,117.99
+BA,226.54,False,219.89,216.44,219.41,44.8,10.2,False,Fail,6,5.21,False,0.91,199.61
+BKNG,191.56,False,171.95,195.4,202.24,24.0,17.2,False,Fail,6,8.56,True,0.72,181.0
+BSX,64.46,False,69.95,87.92,92.16,5.2,40.4,False,Filtered (trend template failed),6,12.67,False,1.25,70.17
+BMY,60.12,True,59.38,52.03,50.38,44.3,2.6,True,B (2-step valid VCP),6,5.61,True,0.82,59.47
+AVGO,403.67,False,332.94,343.95,332.05,144.8,1.9,False,Fail,6,9.02,True,0.9,322.51
+BR,161.37,False,172.37,206.83,217.05,6.8,38.7,False,Fail,6,7.54,False,1.05,163.44
+BRO,68.32,False,68.42,78.1,83.07,7.7,42.1,False,Filtered (trend template failed),6,3.96,True,0.72,67.76
+BF-B,28.81,False,27.06,27.26,27.64,26.4,17.5,False,Fail,6,23.46,False,1.29,30.31
+BLDR,90.3,False,95.83,109.04,115.4,14.5,39.5,False,Filtered (trend template failed),6,4.13,False,0.92,82.33
+BG,118.44,False,122.07,102.88,96.82,65.8,8.5,False,Fail,6,6.2,False,1.49,129.42
+BXP,58.37,False,55.41,64.45,65.06,15.0,23.6,False,Filtered (trend template failed),6,3.25,True,0.69,52.44
+CHRW,186.3,True,176.74,160.36,148.3,116.9,6.8,True,B (2-step valid VCP),6,5.18,True,0.78,172.42
+CDNS,311.14,False,290.33,314.43,321.23,23.7,16.7,False,Fail,6,8.23,False,1.0,289.5
+CPT,102.63,False,102.88,103.3,104.26,7.4,11.6,False,Fail,6,12.05,False,0.92,102.27
+CPB,21.17,False,23.66,27.07,27.99,5.9,40.8,False,Fail,6,9.17,False,1.05,22.02
+COF,209.92,False,194.14,214.08,214.47,32.9,18.3,False,Filtered (trend template failed),6,1.82,True,0.84,184.5
+CAH,212.66,False,217.22,197.39,186.48,64.0,7.3,False,Filtered (trend template failed),6,2.37,False,0.93,215.8
+CCL,29.79,False,28.17,28.51,28.88,73.6,12.0,False,Fail,6,5.19,False,0.91,28.03
+CARR,62.25,False,60.42,57.59,60.5,24.1,22.3,False,Filtered (trend template failed),6,2.57,True,0.74,64.66
+CVNA,395.61,False,331.72,369.63,365.49,102.0,17.3,False,Filtered (trend template failed),6,5.76,True,0.85,308.56
+CASY,748.33,True,692.68,606.61,583.59,74.2,1.4,False,Fail,6,3.13,True,0.9,758.76
+CAT,796.54,True,733.65,618.82,568.22,182.2,0.0,True,B (2-step valid VCP),6,7.18,True,0.81,730.32
+CBOE,301.42,True,288.64,263.34,257.55,43.3,2.6,False,Fail,6,6.79,False,0.94,292.89
+CBRE,152.01,False,142.56,154.29,154.01,31.5,11.4,False,Filtered (trend template failed),6,2.93,True,0.75,135.75
+CDW,133.97,False,124.77,137.82,145.73,18.1,28.6,False,Filtered (trend template failed),6,3.06,True,0.88,121.9
+COR,321.61,False,342.46,338.41,326.76,16.4,14.0,False,Fail,6,16.83,False,1.13,324.93
+CNC,38.72,False,38.32,38.49,36.08,53.6,38.5,False,Fail,6,0.77,True,0.63,37.55
+CNP,42.75,False,42.75,39.98,39.25,22.3,3.1,False,Fail,6,5.39,False,1.1,44.13
+CF,111.96,False,113.99,93.56,92.22,54.6,18.6,False,Fail,6,6.99,False,1.26,133.78
+CRL,183.0,False,169.16,180.02,175.2,78.2,19.3,False,Filtered (trend template failed),6,3.82,False,0.96,174.9
+SCHW,92.56,False,95.18,95.8,95.48,25.0,13.4,False,Filtered (trend template failed),6,6.44,True,0.84,95.68
+CHTR,240.69,False,225.7,225.09,246.08,31.7,43.7,False,Filtered (trend template failed),6,3.68,False,0.93,223.8
+CVX,180.37,False,191.59,166.55,162.4,40.9,14.6,False,Fail,6,6.51,False,1.28,201.54
+CMG,36.21,False,35.15,36.63,39.02,21.5,37.8,False,Fail,6,10.32,False,1.07,34.41
+CB,330.98,False,328.79,304.75,297.02,24.8,3.2,False,Filtered (trend template failed),6,2.16,True,0.81,332.94
+CHD,96.96,False,98.25,90.53,91.42,19.3,7.9,False,Fail,6,2.26,False,0.95,96.16
+CIEN,498.85,True,373.42,256.78,215.75,762.5,0.0,False,Fail,6,5.81,True,0.81,496.02
+CI,278.36,False,275.63,277.46,281.02,15.2,16.4,False,Filtered (trend template failed),6,5.15,False,1.26,278.45
+CINF,166.1,True,162.3,160.41,157.39,33.0,3.2,True,B (2-step valid VCP),6,7.19,False,1.19,163.95
+CTAS,179.66,False,187.72,189.33,195.8,8.4,20.6,False,Filtered (trend template failed),6,18.98,False,1.26,204.53
+CSCO,85.57,True,79.74,75.3,73.26,61.0,0.9,True,B (2-step valid VCP),6,6.23,False,1.01,83.7
+C,133.1,True,114.85,108.87,104.64,119.9,0.0,True,B (2-step valid VCP),6,6.3,False,1.14,114.48
+CFG,65.29,True,61.62,57.21,54.94,96.2,4.1,True,B (2-step valid VCP),6,3.32,True,0.74,64.97
+CLX,105.79,False,113.08,110.44,113.09,9.8,23.3,False,Fail,6,20.46,False,1.08,107.62
+CME,285.4,False,302.96,277.77,274.64,13.8,10.5,False,Filtered (trend template failed),6,4.92,False,1.27,310.58
+CMS,77.1,False,76.69,73.14,72.52,15.0,3.6,False,Fail,6,4.94,False,0.98,79.94
+KO,76.0,False,77.28,71.77,70.81,17.3,6.2,False,Filtered (trend template failed),6,4.05,False,1.0,78.18
+CTSH,61.14,False,63.49,71.41,71.64,5.6,29.1,False,Fail,6,7.39,True,0.66,62.54
+COHR,336.07,True,257.35,189.45,166.58,544.8,0.0,True,"C (Structure valid, needs tightening)",6,20.29,False,1.69,275.57
+COIN,211.07,False,180.29,249.99,273.08,49.6,49.7,False,Filtered (trend template failed),6,4.18,True,0.69,175.18
+CL,86.25,False,90.18,83.11,83.6,15.7,13.0,False,Fail,6,3.03,False,1.0,86.04
+CMCSA,29.7,False,29.77,27.91,28.61,22.6,8.9,False,Fail,6,3.18,True,0.88,28.31
+FIX,1635.76,True,1414.48,1102.13,989.1,399.9,0.9,True,"C (Structure valid, needs tightening)",6,13.43,False,0.91,1650.48
+CAG,14.9,False,17.11,17.27,17.56,5.7,37.1,False,Fail,6,21.25,False,1.04,15.78
+COP,113.7,False,119.13,100.95,98.86,37.9,15.0,False,Fail,6,4.05,False,1.14,131.77
+ED,108.88,False,111.7,103.06,102.02,15.8,5.7,False,Filtered (trend template failed),6,5.5,False,1.01,115.43
+STZ,164.62,False,155.52,144.93,149.37,29.8,14.1,False,Filtered (trend template failed),6,1.76,True,0.82,166.15
+CEG,293.89,False,296.85,329.64,327.23,53.4,27.1,False,Fail,6,10.13,False,0.96,303.32
+COO,70.65,False,75.88,75.59,74.63,9.8,16.3,False,Filtered (trend template failed),6,3.12,True,0.8,71.73
+CPRT,33.35,False,35.37,39.6,41.55,2.8,47.8,False,Filtered (trend template failed),6,1.92,True,0.73,33.4
+GLW,164.27,True,141.72,105.36,94.39,309.7,6.2,True,"C (Structure valid, needs tightening)",6,12.16,False,0.94,175.17
+CPAY,339.8,False,318.88,304.95,309.51,33.3,4.7,False,Filtered (trend template failed),6,3.03,True,0.69,293.83
+CTVA,79.86,False,79.18,70.73,71.21,36.4,6.6,False,Filtered (trend template failed),6,3.4,False,1.26,85.46
+CSGP,39.77,False,44.03,61.97,68.75,9.0,58.9,False,Fail,6,17.56,False,0.96,44.25
+COST,988.75,False,994.67,943.83,947.46,16.5,6.1,False,Fail,6,5.55,False,1.08,1032.03
+CTRA,29.78,False,32.21,27.47,26.52,36.3,18.0,False,Filtered (trend template failed),6,6.58,False,0.97,34.91
+CRH,119.57,False,112.97,117.14,113.7,45.6,8.7,False,Filtered (trend template failed),6,4.49,False,1.0,117.89
+CRWD,420.9,False,405.28,463.17,459.62,20.2,24.5,False,Filtered (trend template failed),6,11.13,False,1.45,426.51
+CCI,88.67,False,85.19,87.9,90.75,15.2,19.4,False,Filtered (trend template failed),6,12.48,False,0.94,87.08
+CSX,43.59,True,41.02,37.35,36.5,61.8,0.0,False,Fail,6,5.31,False,1.12,40.31
+CMI,622.81,True,570.46,511.35,476.29,131.4,0.0,False,Fail,6,7.76,False,0.94,618.28
+CVS,77.39,False,76.05,77.08,74.21,33.9,7.7,False,Fail,6,3.74,True,0.77,79.33
+DHR,195.15,False,199.09,211.77,208.9,8.1,19.2,False,Filtered (trend template failed),6,3.35,True,0.73,198.61
+DRI,202.08,False,203.03,191.6,194.47,21.2,7.8,False,Fail,6,3.02,True,0.74,195.07
+DDOG,124.0,False,119.38,138.89,138.59,39.5,37.9,False,Filtered (trend template failed),6,12.45,True,0.86,120.36
+DVA,147.4,False,150.03,130.31,132.41,41.9,6.0,False,Filtered (trend template failed),6,7.13,True,0.87,151.56
+DECK,112.31,False,108.08,101.78,103.42,41.2,13.2,False,Fail,6,1.79,True,0.66,109.77
+DE,590.6,False,593.52,515.12,509.91,35.5,10.6,False,Filtered (trend template failed),6,4.72,True,0.79,618.0
+DELL,195.83,True,151.54,139.8,136.9,142.1,0.0,False,Fail,6,10.8,False,1.22,184.01
+DAL,73.82,True,66.7,64.43,62.45,89.3,1.8,True,A (3-step valid VCP),6,1.51,False,0.98,68.08
+DVN,42.55,False,46.09,38.89,37.47,49.0,18.3,False,Filtered (trend template failed),6,6.68,False,1.16,49.95
+DXCM,62.69,False,67.48,67.11,70.62,14.3,30.0,False,Fail,6,8.51,False,0.93,65.8
+FANG,173.4,False,181.43,158.34,153.81,37.5,14.2,False,Fail,6,4.7,False,1.11,189.1
+DLR,202.76,True,179.61,168.17,167.84,42.6,0.0,False,Fail,6,4.39,False,0.95,181.25
+DG,125.7,False,135.31,123.38,119.87,47.7,19.2,False,Fail,6,6.98,False,0.98,124.42
+DLTR,104.71,False,114.79,112.04,111.54,43.0,25.9,False,Filtered (trend template failed),6,10.39,False,1.13,111.09
+D,62.54,False,62.72,60.33,59.6,25.7,5.0,False,Filtered (trend template failed),6,6.37,False,0.94,64.23
+DPZ,371.76,False,382.17,403.16,415.72,6.8,24.0,False,Filtered (trend template failed),6,3.89,True,0.77,380.77
+DASH,186.18,False,167.02,211.12,220.27,27.0,33.9,False,Filtered (trend template failed),6,5.05,True,0.7,160.69
+DOV,220.94,True,217.61,195.97,192.1,41.3,5.1,True,B (2-step valid VCP),6,5.92,True,0.78,219.24
+DOW,35.24,False,35.44,27.56,26.74,75.9,15.8,False,Fail,6,9.15,False,1.25,40.11
+DHI,151.54,False,148.53,152.05,152.42,30.8,17.2,False,Filtered (trend template failed),6,4.53,False,1.04,138.82
+DTE,145.86,False,145.1,137.42,136.48,15.2,3.4,False,Fail,6,5.2,False,1.11,150.98
+DUK,126.89,False,129.08,122.92,121.82,16.8,4.9,False,Fail,6,4.98,False,1.15,133.0
+DD,47.83,True,47.11,41.04,38.48,96.9,6.8,False,Fail,6,4.55,True,0.82,47.85
+ETN,407.07,False,371.14,357.84,358.27,58.8,0.0,False,Filtered (trend template failed),6,8.39,False,0.98,403.36
+EBAY,104.62,True,90.46,88.83,88.43,62.0,0.0,False,Fail,6,2.36,True,0.8,97.71
+SATS,134.6,True,115.4,97.92,83.04,741.8,0.0,True,B (2-step valid VCP),6,6.68,False,1.03,128.68
+ECL,277.36,False,281.46,272.35,271.84,21.0,9.8,False,Filtered (trend template failed),6,2.7,True,0.69,275.2
+EIX,70.29,False,70.98,61.31,58.84,54.1,7.3,False,Filtered (trend template failed),6,4.41,False,1.27,75.82
+EW,81.11,False,81.29,81.48,80.81,17.2,7.0,False,Fail,6,4.7,False,1.01,81.71
+EA,203.67,True,201.3,199.71,190.26,44.1,0.5,False,Fail,6,0.96,True,0.72,204.16
+ELV,322.3,False,308.59,327.84,321.6,19.3,24.3,False,Filtered (trend template failed),6,3.82,True,0.8,318.23
+EME,813.35,True,760.1,689.6,667.25,124.7,0.1,True,B (2-step valid VCP),6,1.2,True,0.81,813.77
+EMR,145.48,True,141.2,137.12,136.88,53.4,9.7,False,Fail,6,5.78,False,0.91,144.67
+ETR,115.25,True,106.79,97.82,94.86,47.1,1.9,False,Fail,6,5.91,False,1.03,117.44
+EOG,125.9,False,130.33,114.63,115.09,25.8,15.4,False,Fail,6,6.32,False,1.06,143.12
+EPAM,130.99,False,142.61,169.35,168.63,7.0,40.8,False,Fail,6,11.25,False,1.07,137.99
+EQT,57.4,False,60.9,56.84,55.81,21.8,15.5,False,Fail,6,16.52,True,0.86,67.93
+EFX,195.37,False,189.67,210.61,219.92,15.3,29.7,False,Fail,6,9.51,False,1.06,187.32
+EQIX,1088.87,True,965.34,842.32,823.6,50.8,0.0,True,B (2-step valid VCP),6,2.57,False,1.2,984.46
+EQR,62.54,False,60.97,60.69,61.34,9.2,8.9,False,Fail,6,9.58,True,0.9,63.35
+ERIE,246.16,False,256.91,281.74,297.93,4.9,39.1,False,Fail,6,4.51,False,1.52,261.29
+ESS,254.48,False,249.38,252.05,254.77,7.4,10.3,False,Filtered (trend template failed),6,7.21,False,1.04,251.9
+EL,77.05,False,89.48,95.98,94.17,48.6,35.4,False,Fail,6,24.38,False,1.32,71.77
+EG,349.98,False,329.99,329.38,330.69,15.5,3.5,False,Filtered (trend template failed),6,1.96,False,0.9,324.3
+EVRG,81.98,True,81.33,76.7,74.81,32.8,2.9,False,Fail,6,5.45,False,1.25,84.41
+ES,68.74,False,70.86,69.13,67.6,27.6,8.9,False,Filtered (trend template failed),6,2.68,True,0.87,70.57
+EXC,46.3,False,48.0,45.65,45.0,12.6,7.9,False,Fail,6,7.66,False,1.14,49.44
+EXE,95.67,False,104.93,106.84,104.64,3.9,21.7,False,Filtered (trend template failed),6,2.82,True,0.86,113.92
+EXPE,267.95,False,228.73,243.1,231.06,84.2,10.9,False,Fail,6,7.03,True,0.68,241.25
+EXPD,147.16,True,146.67,141.85,135.74,42.1,10.8,True,A (3-step valid VCP),6,2.43,True,0.76,146.62
+EXR,145.35,False,140.0,136.72,137.35,17.5,3.7,False,Fail,6,14.99,False,0.98,150.9
+XOM,143.93,False,154.56,130.25,124.73,44.9,16.1,False,Filtered (trend template failed),6,3.95,False,1.02,171.47
+FFIV,308.14,False,286.23,279.84,287.43,37.6,10.2,False,Fail,6,6.24,False,1.09,309.1
+FDS,233.4,False,211.04,257.9,292.27,23.4,50.0,False,Fail,6,8.37,False,1.06,230.94
+FICO,1087.55,False,1212.99,1509.06,1504.25,17.9,50.7,False,Fail,6,15.71,False,1.09,1094.32
+FAST,45.76,False,45.97,43.86,44.55,18.4,8.2,False,Fail,6,2.12,True,0.85,49.17
+FRT,112.11,False,106.0,100.22,98.34,27.9,0.0,False,Fail,6,3.7,True,0.89,105.68
+FDX,389.08,True,367.01,301.39,282.73,95.4,0.0,False,Fail,6,5.06,False,0.95,377.0
+FIS,48.65,False,48.49,58.81,62.4,12.2,39.7,False,Fail,6,7.74,False,1.51,47.01
+FITB,50.67,True,48.51,46.08,45.12,57.5,7.2,True,B (2-step valid VCP),6,3.15,True,0.9,50.22
+FSLR,191.38,False,205.17,231.89,220.59,56.3,32.8,False,Filtered (trend template failed),6,3.57,True,0.73,203.47
+FE,49.72,False,50.13,46.8,45.44,28.9,4.2,False,Filtered (trend template failed),6,6.22,False,1.27,51.91
+FISV,64.08,False,59.12,77.39,94.69,18.9,70.5,False,Fail,6,7.4,True,0.89,58.21
+F,12.99,False,12.63,12.71,12.32,45.3,10.0,False,Filtered (trend template failed),6,1.37,True,0.56,11.68
+FTNT,81.36,False,81.59,81.88,84.07,9.4,25.1,False,Filtered (trend template failed),6,8.39,False,1.14,83.72
+FTV,60.7,True,57.3,53.76,52.63,30.8,1.9,False,Fail,6,3.98,True,0.86,60.23
+FOXA,65.23,False,59.01,63.74,61.98,39.5,13.9,False,Filtered (trend template failed),6,1.23,False,2.03,59.13
+FOX,58.54,False,53.47,57.31,55.94,34.6,13.1,False,Filtered (trend template failed),6,1.69,False,1.74,53.78
+BEN,27.4,False,25.33,23.85,23.86,67.0,1.3,False,Fail,6,4.81,False,1.04,23.62
+FCX,70.42,True,62.01,51.75,49.65,116.5,0.0,True,B (2-step valid VCP),6,4.27,True,0.81,56.96
+GRMN,272.01,False,238.4,223.7,224.4,48.0,0.0,False,Fail,6,7.67,True,0.75,244.78
+IT,155.84,False,156.98,211.95,233.56,8.4,65.3,False,Fail,6,9.69,True,0.83,159.14
+GE,311.38,False,312.21,305.58,295.94,75.5,9.8,False,Fail,6,7.86,False,1.09,318.0
+GEHC,75.38,False,75.68,77.56,76.76,24.9,14.4,False,Filtered (trend template failed),6,3.08,True,0.84,71.94
+GEV,997.11,True,866.55,706.51,680.64,219.2,0.0,True,"C (Structure valid, needs tightening)",6,11.51,False,1.16,991.32
+GEN,20.11,False,21.12,24.78,26.04,12.4,36.6,False,Fail,6,7.64,False,0.91,19.37
+GNRC,215.01,True,208.51,178.46,177.74,101.7,9.1,True,B (2-step valid VCP),6,3.99,True,0.58,199.05
+GD,336.61,False,349.04,343.03,334.38,29.0,7.9,False,Fail,6,4.18,False,0.94,349.77
+GIS,35.6,False,40.39,43.99,44.98,3.2,35.2,False,Filtered (trend template failed),6,26.5,False,1.08,37.04
+GM,82.38,True,77.23,73.5,68.75,88.2,4.4,True,B (2-step valid VCP),6,5.31,False,0.94,76.61
+GPC,115.25,False,114.73,124.86,126.16,19.6,22.1,False,Filtered (trend template failed),6,2.16,False,1.25,105.75
+GILD,137.93,False,144.07,128.8,124.55,46.1,11.0,False,Filtered (trend template failed),6,1.07,True,0.76,142.09
+GPN,72.63,False,71.57,76.78,78.38,15.8,18.6,False,Fail,6,13.42,False,0.92,72.42
+GL,151.78,True,142.62,138.9,137.37,30.6,0.0,True,B (2-step valid VCP),6,7.67,False,1.0,147.85
+GDDY,84.57,False,86.14,112.79,123.63,6.9,56.0,False,Filtered (trend template failed),6,4.79,True,0.73,83.28
+GS,926.39,True,868.11,846.41,813.98,89.5,4.6,True,B (2-step valid VCP),6,4.63,True,0.81,841.84
+HAL,36.72,True,36.18,30.22,28.03,94.8,9.2,False,Fail,6,6.23,False,1.16,40.42
+HIG,140.21,False,137.95,133.6,131.67,24.8,1.9,False,Filtered (trend template failed),6,2.3,False,0.91,140.4
+HAS,97.62,True,95.29,84.73,82.66,96.2,7.2,False,Fail,6,4.73,True,0.69,93.85
+HCA,488.82,False,510.69,476.64,452.49,54.9,10.2,False,Fail,6,14.05,False,1.09,507.19
+DOC,17.26,False,16.97,17.12,17.08,11.4,7.6,False,Filtered (trend template failed),6,2.25,False,0.95,16.88
+HSIC,79.69,False,77.02,73.36,72.4,28.5,4.4,False,Filtered (trend template failed),6,3.17,True,0.79,74.46
+HSY,194.07,False,217.01,194.94,190.37,31.1,17.9,False,Fail,6,6.5,False,0.93,210.84
+HPE,26.33,False,22.76,22.99,22.52,82.2,0.0,False,Filtered (trend template failed),6,2.04,True,0.87,24.98
+HLT,343.24,True,309.7,288.02,283.78,68.1,0.0,True,B (2-step valid VCP),6,1.98,True,0.76,308.26
+HD,350.19,False,352.34,364.13,368.43,9.9,16.2,False,Filtered (trend template failed),6,3.27,False,0.9,329.56
+HON,234.9,True,234.63,210.91,210.3,31.7,5.3,True,B (2-step valid VCP),6,0.86,False,0.99,236.06
+HRL,21.16,False,22.9,23.0,24.07,3.3,29.6,False,Fail,6,9.96,False,1.06,22.75
+HST,21.05,True,19.42,17.88,17.34,65.7,0.0,True,B (2-step valid VCP),6,3.29,False,0.96,19.27
+HWM,257.73,True,244.75,215.94,206.95,116.3,2.8,False,Fail,6,7.71,True,0.75,258.03
+HPQ,19.81,False,18.8,22.27,23.06,10.6,29.9,False,Fail,6,6.41,True,0.82,19.51
+HUBB,539.58,True,502.89,464.56,455.04,65.9,1.1,True,B (2-step valid VCP),6,6.64,False,0.94,545.62
+HUM,202.88,False,181.15,231.85,238.92,24.6,34.2,False,Fail,6,3.15,True,0.81,198.39
+HBAN,16.95,False,16.44,16.56,16.55,32.7,11.1,False,Fail,6,3.35,True,0.79,15.54
+HII,395.69,False,411.56,354.57,331.25,87.0,12.8,False,Filtered (trend template failed),6,4.12,True,0.79,411.35
+IBM,252.44,False,250.49,279.01,273.12,13.0,19.4,False,Fail,6,7.01,True,0.71,248.16
+IEX,206.45,True,199.79,182.56,179.24,32.1,3.8,False,Fail,6,4.87,False,1.12,205.12
+IDXX,593.92,False,603.18,653.02,639.67,47.6,22.5,False,Filtered (trend template failed),6,4.87,False,0.92,591.84
+ITW,273.03,False,275.25,258.51,257.77,23.0,8.3,False,Filtered (trend template failed),6,3.85,False,0.97,274.51
+INCY,97.3,True,96.96,96.82,92.1,71.3,12.0,False,Fail,6,2.34,True,0.71,97.69
+IR,86.75,False,87.94,83.27,82.99,24.6,12.1,False,Filtered (trend template failed),6,8.02,True,0.72,88.32
+PODD,204.82,False,228.29,280.11,287.59,4.0,41.9,False,Fail,6,21.7,False,0.97,251.5
+INTC,69.48,True,49.01,42.1,37.29,268.8,0.0,False,Fail,6,12.7,False,0.91,47.18
+IBKR,82.18,True,70.95,69.0,67.33,115.2,0.0,False,Fail,6,7.27,False,0.92,68.68
+ICE,160.79,False,160.03,160.29,165.04,11.1,13.9,False,Fail,6,4.29,True,0.77,167.79
+IFF,75.45,False,74.25,68.15,68.32,28.2,8.6,False,Fail,6,3.57,True,0.71,73.77
+IP,37.63,False,39.98,40.86,42.68,11.5,30.2,False,Filtered (trend template failed),6,5.29,False,1.07,37.07
+INTU,391.0,False,415.48,563.55,603.99,11.4,51.2,False,Filtered (trend template failed),6,23.35,True,0.81,457.87
+ISRG,473.29,False,479.83,507.85,503.11,10.2,20.2,False,Filtered (trend template failed),6,2.52,False,1.0,462.28
+IVZ,24.97,True,24.74,24.73,23.53,108.6,14.5,False,Fail,6,6.37,False,1.24,24.32
+INVH,26.94,False,25.6,26.74,27.58,11.8,20.8,False,Fail,6,9.09,False,1.18,26.51
+IQV,177.98,False,171.32,202.02,196.86,29.9,27.1,False,Filtered (trend template failed),6,3.42,True,0.64,173.26
+IRM,117.99,True,105.55,96.78,95.74,50.8,0.0,False,Fail,6,9.6,True,0.89,107.96
+JBHT,247.43,True,218.88,189.25,178.24,100.6,0.0,True,B (2-step valid VCP),6,2.07,True,0.71,209.1
+JBL,321.57,True,267.54,235.81,231.13,148.2,0.0,False,Fail,6,12.63,True,0.88,283.24
+JKHY,154.04,False,161.24,165.7,166.09,6.1,19.7,False,Fail,6,7.02,True,0.82,158.32
+J,128.55,False,132.82,140.45,140.8,13.3,21.4,False,Fail,6,6.31,True,0.8,131.14
+JNJ,234.82,False,241.02,212.45,201.1,64.9,5.5,False,Filtered (trend template failed),6,2.47,True,0.77,241.31
+JCI,141.32,True,136.97,121.61,117.79,91.1,2.5,True,B (2-step valid VCP),6,7.93,True,0.81,142.82
+JPM,314.04,False,298.24,304.7,300.86,39.8,5.7,False,Filtered (trend template failed),6,4.26,False,1.0,313.68
+KVUE,17.73,False,17.91,16.92,17.83,28.7,24.3,False,Filtered (trend template failed),6,0.98,True,0.63,17.43
+KDP,26.52,False,27.56,27.14,28.29,6.6,22.7,False,Fail,6,4.31,False,1.03,26.57
+KEY,22.05,True,20.73,19.57,19.15,67.2,4.1,True,B (2-step valid VCP),6,3.0,True,0.77,21.72
+KEYS,336.43,True,282.86,221.45,207.26,155.1,0.0,True,B (2-step valid VCP),6,9.77,True,0.85,331.11
+KMB,99.59,False,101.68,105.23,110.48,7.0,27.7,False,Filtered (trend template failed),6,1.39,False,1.01,97.96
+KIM,24.15,False,22.8,21.27,21.2,26.7,0.0,False,Fail,6,4.96,False,1.07,23.38
+KMI,31.42,False,32.79,28.99,28.39,27.1,7.8,False,Fail,6,3.49,False,1.12,33.3
+KKR,106.01,False,94.58,115.68,122.17,26.4,30.0,False,Filtered (trend template failed),6,1.89,True,0.65,92.5
+KLAC,1773.19,True,1516.01,1317.59,1213.74,187.8,1.3,True,"C (Structure valid, needs tightening)",6,11.72,False,0.93,1795.91
+KHC,22.64,False,23.16,23.79,24.41,6.7,20.2,False,Fail,6,7.34,False,1.24,23.57
+KR,67.04,False,70.46,66.38,67.17,13.7,11.3,False,Filtered (trend template failed),6,4.31,False,0.91,73.03
+LHX,353.23,False,354.94,317.59,304.96,67.8,6.3,False,Filtered (trend template failed),6,2.32,False,0.98,361.97
+LH,271.9,False,273.38,268.39,267.12,29.5,6.1,False,Filtered (trend template failed),6,5.02,False,0.92,274.72
+LRCX,266.04,True,231.55,187.9,165.97,329.5,2.3,True,"C (Structure valid, needs tightening)",6,16.29,False,0.99,272.41
+LVS,58.22,False,55.22,58.05,56.51,86.6,15.8,False,Fail,6,5.97,True,0.9,54.9
+LDOS,156.2,False,168.34,181.93,178.99,14.1,21.4,False,Filtered (trend template failed),6,4.83,True,0.65,160.64
+LEN,94.06,False,101.03,113.28,115.47,10.8,33.4,False,Fail,6,12.52,False,1.21,89.79
+LII,497.89,False,507.35,505.94,527.4,14.0,24.5,False,Filtered (trend template failed),6,3.05,True,0.7,520.42
+LLY,926.76,False,973.14,958.09,903.41,48.9,16.4,False,Fail,6,12.91,False,0.91,955.19
+LIN,492.9,False,489.56,454.08,457.53,27.0,3.1,False,Filtered (trend template failed),6,3.89,False,1.18,508.87
+LYV,158.21,False,156.51,150.1,151.61,28.1,9.1,False,Fail,6,5.94,True,0.73,166.28
+LMT,597.96,False,635.33,542.43,516.32,48.5,11.6,False,Fail,6,4.58,False,0.95,637.9
+L,111.12,True,108.87,104.77,101.95,33.7,1.0,False,Fail,6,2.87,False,0.98,110.88
+LOW,253.59,False,253.18,249.73,247.07,22.1,11.8,False,Filtered (trend template failed),6,2.22,False,0.97,236.28
+LULU,165.19,False,167.3,177.82,185.18,13.3,50.7,False,Filtered (trend template failed),6,3.55,True,0.82,166.51
+LITE,870.32,True,703.12,415.05,340.07,1638.2,3.0,False,Fail,6,18.35,False,0.96,897.3
+LYB,66.34,False,67.26,52.96,53.31,63.0,19.5,False,Fail,6,9.96,False,1.2,75.51
+MTB,219.6,True,215.0,202.0,199.35,44.3,7.1,True,B (2-step valid VCP),6,1.94,False,0.97,222.99
+MPC,214.08,False,220.24,195.64,189.3,76.2,15.0,False,Fail,6,9.29,False,0.97,245.42
+MAR,378.16,True,338.45,306.03,296.48,77.0,0.0,True,A (3-step valid VCP),6,2.83,True,0.88,326.79
+MRSH,178.87,False,175.73,182.45,187.84,6.4,22.4,False,Fail,6,3.86,True,0.76,174.91
+MLM,633.95,True,627.61,626.61,617.33,31.4,10.4,True,B (2-step valid VCP),6,0.75,True,0.58,635.29
+MAS,67.39,False,66.17,66.11,66.9,15.8,13.0,False,Filtered (trend template failed),6,2.62,True,0.75,60.69
+MA,524.54,False,511.03,541.84,549.11,8.5,12.0,False,Fail,6,3.68,False,0.98,501.9
+MKC,54.03,False,60.28,63.83,65.35,11.7,28.9,False,Fail,6,31.9,False,1.05,54.11
+MCD,311.54,False,319.27,309.09,306.77,11.0,8.1,False,Fail,6,2.44,True,0.89,310.79
+MCK,861.63,False,915.79,842.47,805.99,31.1,13.5,False,Filtered (trend template failed),6,3.13,False,0.97,873.43
+MDT,86.86,False,91.39,94.48,93.16,11.1,16.3,False,Filtered (trend template failed),6,1.65,False,1.17,88.65
+MRK,117.27,False,118.64,102.63,97.16,65.4,4.8,False,Filtered (trend template failed),6,1.46,False,1.43,123.18
+META,683.88,False,629.47,660.7,680.24,41.5,13.2,False,Fail,6,19.65,False,1.11,579.23
+MET,78.13,False,73.23,76.62,76.67,15.4,4.7,False,Filtered (trend template failed),6,3.82,True,0.84,70.39
+MTD,1334.68,False,1298.67,1357.06,1331.72,37.6,11.4,False,Filtered (trend template failed),6,2.99,False,1.01,1345.89
+MGM,39.32,False,36.57,35.01,35.53,38.2,1.1,False,Filtered (trend template failed),6,3.06,True,0.82,37.89
+MCHP,79.44,False,70.43,66.43,66.6,115.6,1.0,False,Filtered (trend template failed),6,8.49,True,0.89,65.63
+MU,454.38,True,406.29,304.38,258.06,582.5,2.4,True,"C (Structure valid, needs tightening)",6,30.28,False,1.41,465.66
+MSFT,428.53,False,392.22,458.19,470.47,20.2,20.6,False,Fail,6,13.13,False,0.91,410.68
+MAA,127.54,False,127.35,130.02,132.59,7.1,20.5,False,Fail,6,11.26,False,0.95,124.86
+MRNA,54.83,True,50.34,36.87,34.81,145.2,5.1,True,B (2-step valid VCP),6,2.73,True,0.67,52.1
+TAP,44.29,False,45.99,45.96,46.67,7.6,21.9,False,Filtered (trend template failed),6,1.15,True,0.85,43.4
+MDLZ,57.37,False,58.1,57.44,58.87,12.3,16.8,False,Filtered (trend template failed),6,1.21,False,1.16,59.09
+MPWR,1460.91,True,1160.3,1033.08,971.55,189.7,0.0,False,Fail,6,10.4,True,0.87,1116.43
+MNST,76.58,False,77.66,74.26,71.11,32.1,11.6,False,Fail,6,8.08,False,0.91,76.19
+MCO,457.26,False,443.41,477.11,484.21,11.5,15.1,False,Filtered (trend template failed),6,4.51,True,0.64,447.62
+MS,190.71,True,169.27,168.74,162.27,84.2,0.5,False,Fail,6,4.52,True,0.83,165.87
+MOS,24.33,False,26.97,27.35,28.92,4.9,34.1,False,Fail,6,24.78,False,1.78,26.62
+MSI,443.14,False,451.61,421.82,427.08,22.2,8.9,False,Filtered (trend template failed),6,3.14,True,0.78,447.73
+MSCI,570.96,False,548.29,559.85,559.65,12.0,8.2,False,Filtered (trend template failed),6,3.67,True,0.82,556.93
+NDAQ,89.07,False,84.99,89.19,90.04,27.6,11.5,False,Fail,6,5.6,True,0.87,88.09
+NTAP,104.25,False,100.58,107.78,107.71,30.6,16.3,False,Fail,6,7.43,True,0.88,103.35
+NFLX,98.04,False,91.97,100.45,105.88,29.2,26.8,False,Fail,6,8.32,True,0.83,99.17
+NEM,117.03,True,115.15,101.58,92.75,143.6,11.1,False,Fail,6,19.43,False,1.35,120.9
+NWSA,26.11,False,24.05,25.81,26.67,17.0,15.5,False,Filtered (trend template failed),6,2.13,False,2.95,24.93
+NWS,30.04,False,27.3,29.3,30.37,17.5,14.0,False,Fail,6,1.44,False,1.84,28.51
+NEE,90.71,False,91.92,84.61,81.38,44.4,4.5,False,Fail,6,3.58,False,1.15,94.48
+NKE,45.96,False,54.92,61.68,64.79,7.8,40.9,False,Fail,6,20.32,False,1.59,53.49
+NI,48.37,True,46.51,43.68,42.96,30.5,0.2,False,Fail,6,2.64,True,0.85,48.47
+NDSN,285.73,True,278.21,252.57,243.67,63.6,4.2,False,Fail,6,5.42,True,0.86,267.24
+NSC,306.4,True,300.27,291.61,286.81,46.1,3.6,True,B (2-step valid VCP),6,0.92,True,0.89,284.95
+NTRS,160.72,True,143.83,137.08,134.27,89.9,0.0,True,B (2-step valid VCP),6,3.83,True,0.87,140.37
+NOC,670.16,False,707.72,631.81,613.43,49.2,12.7,False,Fail,6,4.1,False,0.96,702.5
+NCLH,21.67,False,21.12,21.7,22.29,35.2,19.6,False,Filtered (trend template failed),6,3.35,False,1.04,19.38
+NRG,166.96,False,160.67,161.4,159.11,81.6,9.3,False,Fail,6,12.5,True,0.83,170.96
+NUE,196.02,True,175.83,160.77,155.88,86.5,0.0,False,Fail,6,7.7,False,0.92,173.72
+NVDA,200.73,False,183.27,184.44,181.75,107.2,3.0,False,Fail,6,7.56,False,1.03,178.68
+NVR,7051.04,False,7025.71,7395.93,7526.02,10.7,17.5,False,Filtered (trend template failed),6,1.55,True,0.8,6552.2
+NXPI,217.71,False,211.1,215.96,217.45,31.6,12.4,False,Filtered (trend template failed),6,5.17,False,1.01,197.61
+ORLY,94.03,False,92.63,96.38,97.16,7.7,12.8,False,Filtered (trend template failed),6,1.03,True,0.79,94.4
+OXY,52.3,False,55.34,46.75,46.09,39.0,21.0,False,Fail,6,6.05,False,1.61,66.24
+ODFL,219.46,True,196.49,165.55,162.9,74.4,0.0,True,B (2-step valid VCP),6,1.12,True,0.85,184.43
+OMC,79.89,False,76.85,75.96,75.26,19.9,6.0,False,Fail,6,2.73,True,0.75,76.87
+ON,83.25,True,65.22,57.32,56.31,143.1,0.0,True,"C (Structure valid, needs tightening)",6,11.79,True,0.87,63.1
+OKE,82.11,False,86.41,76.04,75.74,29.4,12.6,False,Fail,6,7.02,False,1.2,90.63
+ORCL,177.59,False,151.17,204.86,214.07,46.0,45.5,False,Filtered (trend template failed),6,5.96,True,0.71,146.6
+OTIS,82.29,False,84.86,87.51,88.07,8.3,17.4,False,Fail,6,9.73,False,1.34,84.14
+PCAR,127.05,True,121.53,110.52,106.98,50.1,1.9,True,B (2-step valid VCP),6,3.33,True,0.86,127.38
+PKG,215.43,False,220.55,211.07,208.48,22.6,12.0,False,Filtered (trend template failed),6,4.68,True,0.71,211.05
+PLTR,147.2,False,143.47,166.04,164.23,62.1,29.0,False,Fail,6,14.67,False,1.46,150.07
+PANW,167.16,False,160.28,185.16,185.94,18.0,24.5,False,Filtered (trend template failed),6,10.39,False,1.09,173.78
+PSKY,11.92,False,10.45,13.5,13.47,35.6,39.0,False,Filtered (trend template failed),6,2.57,False,1.43,10.9
+PH,998.74,True,955.39,874.49,838.37,84.2,2.4,False,Fail,6,6.82,False,1.2,989.49
+PAYX,92.28,False,92.98,107.58,115.13,7.8,40.6,False,Fail,6,8.57,False,0.94,93.59
+PYPL,50.95,False,44.73,56.76,60.25,30.8,34.5,False,Filtered (trend template failed),6,4.18,True,0.81,45.49
+PNR,92.01,False,92.9,101.87,102.74,17.4,17.9,False,Fail,6,18.4,False,1.06,91.2
+PEP,158.3,False,159.51,149.17,146.76,28.2,6.3,False,Filtered (trend template failed),6,2.42,True,0.68,157.49
+PFE,27.5,True,27.23,25.51,25.1,33.9,3.7,False,Fail,6,5.71,True,0.86,28.55
+PCG,17.09,False,17.85,16.38,15.89,32.5,10.3,False,Filtered (trend template failed),6,6.94,False,1.2,18.63
+PM,156.69,False,171.1,161.58,162.37,10.5,16.7,False,Filtered (trend template failed),6,4.84,False,1.37,162.75
+PSX,155.46,False,165.8,144.85,139.6,66.9,17.4,False,Fail,6,0.79,False,1.3,188.28
+PNW,103.65,False,100.23,92.44,91.48,23.2,0.8,False,Fail,6,1.74,True,0.63,104.45
+PNC,224.92,True,215.05,203.34,200.37,54.9,6.5,True,B (2-step valid VCP),6,2.27,True,0.78,221.53
+POOL,232.84,False,220.59,249.7,264.46,17.2,29.4,False,Fail,6,5.69,False,0.98,210.74
+PPG,117.41,False,113.16,106.29,107.27,25.3,10.2,False,Fail,6,4.34,False,0.93,110.47
+PPL,39.04,False,37.84,36.31,36.01,20.2,1.9,False,Fail,6,5.65,True,0.86,39.81
+PFG,96.18,True,91.12,86.78,84.41,42.2,0.5,False,Fail,6,3.03,False,1.77,94.2
+PG,147.51,False,152.11,148.69,150.01,7.6,11.8,False,Fail,6,2.36,True,0.79,146.66
+PGR,205.08,False,203.67,210.12,215.59,7.1,24.4,False,Filtered (trend template failed),6,2.88,True,0.9,199.88
+PLD,144.83,True,135.7,127.11,121.9,51.9,0.0,True,B (2-step valid VCP),6,1.21,False,0.97,130.36
+PRU,102.44,False,98.1,103.28,102.96,11.4,12.5,False,Filtered (trend template failed),6,1.36,False,0.91,97.98
+PEG,81.27,False,82.74,81.01,81.36,8.5,7.7,False,Fail,6,6.41,False,1.28,83.93
+PTC,140.76,False,150.53,172.42,180.42,5.5,35.0,False,Fail,6,7.56,True,0.86,144.36
+PSA,310.01,False,290.28,280.27,279.85,21.2,0.0,False,Fail,6,13.86,False,1.08,307.81
+PHM,128.34,True,126.63,125.19,124.3,39.3,9.8,True,B (2-step valid VCP),6,4.15,True,0.9,118.64
+PWR,599.45,True,556.89,477.17,454.73,136.4,0.0,False,Fail,6,7.72,False,1.17,595.84
+QCOM,136.38,False,134.26,156.17,155.59,9.9,26.5,False,Fail,6,4.96,True,0.87,130.54
+DGX,194.08,False,199.3,187.06,183.57,22.1,8.0,False,Filtered (trend template failed),6,1.33,False,0.9,198.96
+Q,136.65,False,116.59,,,86.1,0.0,False,Fail,6,10.93,True,0.69,135.02
+RL,386.27,True,355.18,345.09,331.95,93.4,0.0,True,A (3-step valid VCP),6,5.33,False,0.92,385.14
+RJF,152.16,False,151.02,159.32,160.11,17.9,12.9,False,Filtered (trend template failed),6,1.74,True,0.81,144.25
+RTX,198.12,False,200.3,184.16,176.27,77.1,6.6,False,Fail,6,10.78,False,0.97,203.48
+O,65.03,False,63.66,59.49,58.55,25.4,3.3,False,Fail,6,7.64,False,1.05,64.74
+REG,80.54,False,76.8,71.74,71.11,22.4,0.0,False,Fail,6,5.94,False,0.99,78.99
+REGN,747.81,False,765.13,710.71,673.48,55.4,7.8,False,Fail,6,3.45,False,1.19,777.25
+RF,28.28,True,27.5,26.47,26.13,54.4,7.7,True,B (2-step valid VCP),6,2.33,False,1.06,28.15
+RSG,207.06,False,220.65,217.03,221.35,2.0,18.9,False,Fail,6,7.32,True,0.87,223.19
+RMD,228.99,False,241.44,251.64,256.76,9.6,21.7,False,Fail,6,3.58,False,1.13,230.7
+RVTY,93.22,False,92.52,95.81,94.84,13.1,20.8,False,Filtered (trend template failed),6,4.49,True,0.74,93.51
+HOOD,92.24,False,75.56,107.99,107.36,131.5,39.5,False,Filtered (trend template failed),6,3.68,True,0.85,71.83
+ROK,416.65,True,383.05,380.57,371.02,86.4,2.8,False,Fail,6,3.52,True,0.71,407.78
+ROL,55.42,False,57.11,58.34,57.88,5.6,15.3,False,Filtered (trend template failed),6,13.84,False,0.9,55.79
+ROP,362.07,False,348.8,418.25,447.87,15.0,37.4,False,Fail,6,4.73,True,0.66,360.19
+ROST,226.38,True,209.1,182.35,171.94,80.1,0.0,False,Fail,6,1.76,True,0.83,224.91
+RCL,293.52,False,292.16,290.44,300.91,57.2,18.8,False,Filtered (trend template failed),6,5.09,True,0.86,282.41
+SPGI,444.32,False,426.2,477.35,492.8,14.0,20.8,False,Fail,6,4.93,True,0.66,436.96
+CRM,184.13,False,187.64,224.93,231.85,11.6,36.3,False,Fail,6,11.65,False,1.08,186.71
+SNDK,888.23,True,678.83,389.84,304.39,2898.8,6.7,False,Fail,6,25.85,False,1.06,952.5
+SBAC,223.74,False,193.31,191.36,197.92,35.5,6.0,False,Fail,6,17.52,True,0.85,223.75
+SLB,52.85,True,49.93,42.07,40.07,68.9,1.2,True,B (2-step valid VCP),6,2.0,True,0.72,52.54
+STX,541.98,True,421.55,323.52,281.97,653.9,0.0,False,Fail,6,16.46,False,1.2,433.84
+SRE,93.6,False,94.14,90.38,87.35,37.0,6.2,False,Fail,6,4.06,False,1.04,99.75
+NOW,97.07,False,105.62,144.92,155.25,17.0,53.5,False,Fail,6,20.93,False,1.12,104.97
+SHW,349.11,False,337.97,338.44,341.76,15.0,6.5,False,Filtered (trend template failed),6,3.6,False,0.9,336.11
+SPG,206.02,True,193.34,184.07,179.12,46.9,0.0,False,Fail,6,6.82,False,1.63,191.31
+SWKS,60.13,False,57.18,63.9,65.77,14.5,25.8,False,Fail,6,7.34,False,0.99,56.66
+SJM,95.8,False,103.2,102.43,103.39,7.0,17.4,False,Fail,6,7.17,True,0.82,96.44
+SW,42.78,False,43.09,40.62,41.73,31.6,17.5,False,Filtered (trend template failed),6,2.24,True,0.67,42.28
+SNA,381.29,True,373.24,353.33,344.69,34.0,2.1,True,B (2-step valid VCP),6,3.0,False,0.95,383.78
+SOLV,71.38,False,69.77,74.52,74.21,14.2,17.1,False,Fail,6,4.3,False,1.03,65.3
+SO,94.04,False,95.31,91.59,91.58,14.4,5.1,False,Filtered (trend template failed),6,0.65,True,0.66,97.59
+LUV,44.07,False,44.26,39.05,37.38,87.0,19.2,False,Filtered (trend template failed),6,2.35,True,0.72,40.4
+SWK,71.78,False,77.07,73.96,73.06,33.4,21.1,False,Filtered (trend template failed),6,4.97,False,1.02,73.43
+SBUX,101.22,False,96.04,88.88,88.96,30.8,0.2,False,Filtered (trend template failed),6,14.51,False,1.14,101.44
+STT,148.54,True,128.25,122.72,119.28,91.8,0.0,True,B (2-step valid VCP),6,3.47,True,0.88,126.08
+STLD,201.46,True,185.76,168.07,158.17,79.8,1.8,True,B (2-step valid VCP),6,3.46,True,0.76,182.85
+STE,226.78,False,231.56,245.45,243.06,6.8,15.4,False,Filtered (trend template failed),6,2.11,True,0.72,225.03
+SYK,345.17,False,352.77,359.57,366.26,6.1,13.8,False,Fail,6,6.71,False,1.16,347.24
+SMCI,28.53,False,28.52,35.76,38.87,39.0,53.0,False,Filtered (trend template failed),6,12.43,False,1.3,24.05
+SYF,78.5,False,69.81,74.18,73.44,70.9,10.9,False,Filtered (trend template failed),6,3.36,True,0.72,67.63
+SNPS,451.73,False,422.38,447.09,483.13,18.7,30.0,False,Filtered (trend template failed),6,12.03,False,1.04,432.48
+SYY,75.96,False,82.16,78.16,78.09,11.6,16.1,False,Filtered (trend template failed),6,3.1,False,1.37,75.15
+TMUS,197.49,False,208.96,209.26,216.92,8.1,23.4,False,Fail,6,11.19,False,0.94,213.94
+TROW,97.64,False,91.2,98.1,98.92,23.2,9.1,False,Fail,6,1.97,False,1.23,90.23
+TTWO,216.3,False,203.28,232.82,232.86,14.0,17.5,False,Filtered (trend template failed),6,2.5,True,0.73,202.13
+TPR,156.5,True,148.48,127.53,121.21,152.5,2.2,True,B (2-step valid VCP),6,1.74,True,0.66,152.62
+TRGP,234.13,False,236.02,193.22,185.87,61.9,6.7,False,Filtered (trend template failed),6,2.85,True,0.89,250.98
+TGT,126.98,True,117.67,101.61,100.72,53.3,0.0,False,Fail,6,4.96,True,0.77,124.03
+TEL,242.04,False,217.36,224.64,217.47,92.8,2.5,False,Filtered (trend template failed),6,5.42,False,1.11,211.67
+TDY,636.27,False,646.66,578.84,569.99,41.9,7.6,False,Fail,6,10.88,False,1.05,660.31
+TER,376.25,True,316.36,225.36,195.28,441.0,0.0,True,"C (Structure valid, needs tightening)",6,14.54,True,0.88,370.13
+TSLA,405.75,False,390.44,422.88,398.89,78.4,17.2,False,Fail,6,9.97,False,1.19,381.26
+TXN,229.89,False,206.63,186.93,189.0,62.9,0.0,False,Fail,6,5.26,True,0.88,196.77
+TPL,418.57,False,475.47,365.24,352.6,53.2,22.5,False,Fail,6,15.97,False,1.37,449.79
+TXT,92.64,False,93.47,88.1,86.31,43.6,8.0,False,Filtered (trend template failed),6,1.38,True,0.61,93.11
+TMO,527.93,False,503.02,542.89,522.95,35.6,17.4,False,Filtered (trend template failed),6,1.28,True,0.74,494.54
+TJX,160.23,True,157.84,151.09,145.8,33.2,2.9,True,B (2-step valid VCP),6,2.75,True,0.84,165.0
+TKO,188.04,False,202.51,198.13,192.63,33.2,16.1,False,Filtered (trend template failed),6,5.3,False,0.97,197.37
+TTD,22.89,False,24.38,36.39,44.22,13.9,74.5,False,Fail,6,11.46,False,0.97,22.69
+TSCO,45.19,False,48.86,52.09,53.68,3.5,27.2,False,Fail,6,16.53,False,1.02,45.64
+TT,479.35,False,443.59,419.81,422.51,49.7,0.0,False,Fail,6,6.93,False,1.12,472.94
+TDG,1284.28,False,1248.51,1301.96,1322.26,13.4,15.3,False,Fail,6,14.59,False,1.08,1296.58
+TRV,304.6,False,299.45,285.76,279.95,24.0,2.0,False,Fail,6,6.87,False,1.09,303.23
+TRMB,69.57,False,66.66,74.59,76.39,23.7,18.4,False,Fail,6,6.42,False,0.95,66.83
+TFC,50.85,True,48.61,47.13,46.28,50.9,8.0,True,B (2-step valid VCP),6,1.89,False,1.03,50.48
+TYL,341.37,False,339.47,427.23,462.54,18.9,44.2,False,Fail,6,7.33,True,0.68,342.38
+TSN,64.57,False,62.95,58.02,57.04,29.5,1.6,False,Fail,6,6.27,False,1.37,65.64
+USB,57.38,True,54.29,51.26,49.79,58.2,4.5,True,A (3-step valid VCP),6,2.47,False,0.99,56.51
+UBER,77.78,False,73.42,84.03,86.15,12.4,22.3,False,Filtered (trend template failed),6,2.63,True,0.76,72.38
+UDR,35.16,False,35.72,35.41,36.04,7.3,15.9,False,Filtered (trend template failed),6,11.05,False,0.92,37.28
+ULTA,549.84,False,601.0,582.17,563.62,57.3,22.2,False,Fail,6,4.1,True,0.84,542.65
+UNP,255.45,False,251.59,234.97,231.62,23.0,4.3,False,Filtered (trend template failed),6,1.05,True,0.83,241.33
+UAL,104.0,False,99.64,102.25,100.39,59.3,11.5,False,Fail,6,6.09,False,1.06,97.67
+UPS,107.56,True,105.58,97.51,95.15,34.4,9.1,True,B (2-step valid VCP),6,1.24,True,0.84,98.38
+URI,806.85,False,798.16,852.67,858.24,42.7,20.6,False,Filtered (trend template failed),6,4.51,True,0.86,779.53
+UNH,324.58,False,285.41,316.83,308.91,39.4,43.0,False,Fail,6,1.1,False,1.26,307.73
+UHS,182.09,False,199.2,208.98,200.62,17.9,25.3,False,Fail,6,8.67,False,0.98,187.88
+VLO,219.26,False,224.28,188.66,177.13,110.7,13.8,False,Fail,6,6.52,False,1.15,242.08
+VTR,84.77,True,84.37,77.43,74.49,39.5,3.1,False,Fail,6,1.31,False,0.99,82.17
+VLTO,92.39,False,91.31,98.02,99.75,8.8,15.5,False,Filtered (trend template failed),6,13.25,False,0.95,97.87
+VRSN,274.55,False,240.88,249.22,255.77,29.8,9.4,False,Filtered (trend template failed),6,5.45,False,1.09,274.75
+VRSK,178.68,False,189.67,213.78,230.02,8.8,44.0,False,Fail,6,13.42,True,0.88,189.75
+VZ,46.71,False,48.51,42.62,42.23,25.6,7.7,False,Fail,6,3.7,False,0.92,50.16
+VRTX,440.25,False,461.42,442.27,438.03,20.1,13.6,False,Filtered (trend template failed),6,3.44,True,0.77,446.78
+VRT,304.9,True,256.87,199.34,182.34,351.8,1.8,False,Fail,6,15.19,True,0.75,310.51
+VTRS,14.4,True,14.32,12.11,11.45,104.0,9.9,True,B (2-step valid VCP),6,3.45,True,0.87,13.63
+VICI,28.64,False,28.4,28.73,29.46,7.6,11.6,False,Fail,6,10.93,False,1.1,29.87
+V,318.1,False,312.13,329.57,333.62,7.6,14.3,False,Fail,6,3.28,False,1.2,305.53
+VST,162.64,False,160.56,173.71,179.13,53.5,25.2,False,Filtered (trend template failed),6,5.11,False,1.0,155.48
+VMC,296.47,False,289.17,293.11,289.73,27.5,10.1,False,Filtered (trend template failed),6,2.99,True,0.82,297.15
+WRB,66.86,False,68.43,70.6,70.24,3.7,13.3,False,Filtered (trend template failed),6,2.26,True,0.84,67.22
+GWW,1162.5,False,1119.14,1032.33,1025.32,26.8,3.3,False,Filtered (trend template failed),6,1.75,True,0.74,1172.21
+WAB,264.54,True,252.84,223.37,216.96,59.1,2.4,True,B (2-step valid VCP),6,4.41,True,0.78,270.94
+WMT,125.4,False,125.41,114.44,110.35,38.7,6.1,False,Fail,6,3.53,True,0.65,129.13
+DIS,106.24,False,101.61,107.55,110.11,29.8,13.7,False,Fail,6,7.86,False,1.22,100.3
+WBD,27.48,False,27.75,25.21,21.97,246.9,8.4,False,Fail,6,6.9,False,1.13,27.64
+WM,222.97,False,232.5,220.56,221.56,14.2,9.2,False,Fail,6,5.74,True,0.88,235.42
+WAT,328.15,False,314.2,347.28,335.88,18.2,20.5,False,Filtered (trend template failed),6,4.35,True,0.75,330.98
+WEC,115.21,False,115.14,110.98,109.6,15.5,3.0,False,Fail,6,4.96,False,0.96,118.78
+WFC,81.9,False,82.62,85.43,83.92,30.8,14.6,False,Filtered (trend template failed),6,4.31,True,0.88,86.64
+WELL,211.9,True,204.79,190.65,183.36,50.0,1.3,True,B (2-step valid VCP),6,0.73,True,0.78,196.73
+WST,273.46,False,248.37,260.87,255.51,35.9,10.8,False,Fail,6,3.53,True,0.79,265.93
+WDC,367.29,True,292.34,207.0,174.04,935.6,0.0,False,Fail,6,20.59,False,1.01,316.93
+WY,25.05,False,24.59,23.94,24.25,19.5,6.8,False,Fail,6,6.72,False,1.08,24.9
+WSM,200.2,True,194.48,192.94,191.79,47.7,9.3,False,Fail,6,4.79,False,1.52,184.1
+WMB,70.25,False,72.45,64.41,62.48,28.5,7.2,False,Fail,6,3.53,False,0.94,74.04
+WTW,295.85,False,293.09,315.39,315.97,6.0,14.9,False,Filtered (trend template failed),6,3.74,True,0.75,291.03
+WDAY,123.41,False,135.08,191.78,201.28,9.7,55.1,False,Fail,6,14.94,False,0.99,132.26
+WYNN,111.3,False,105.73,116.31,115.29,52.3,16.2,False,Filtered (trend template failed),6,2.07,True,0.81,105.24
+XEL,80.52,False,80.15,77.73,75.82,25.5,3.3,False,Fail,6,6.28,False,1.07,82.77
+XYL,123.04,False,125.56,136.62,136.63,14.8,19.1,False,Fail,6,4.57,True,0.75,129.66
+YUM,162.16,False,160.07,152.55,150.58,18.9,3.6,False,Filtered (trend template failed),6,3.59,False,0.93,159.43
+ZBRA,237.34,False,225.62,254.26,271.12,19.1,30.5,False,Filtered (trend template failed),6,4.39,True,0.68,208.45
+ZBH,96.47,False,93.34,93.51,94.7,12.9,9.7,False,Fail,6,14.53,False,0.99,96.52
+ZTS,122.79,False,121.93,127.6,133.53,8.3,27.1,False,Filtered (trend template failed),6,2.88,True,0.79,116.71
