@@ -11,10 +11,14 @@ Usage:
     Modify STOCKS list with NSE symbols (e.g., "RELIANCE.NS")
 """
 
+import os
 import yfinance as yf
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+OUTPUT_DIR = os.path.join(ROOT_DIR, "output")
 
 
 # ─────────────────────────────────────────────
@@ -580,6 +584,7 @@ def run_scanner():
 # OPTIONAL: Export to CSV
 # ─────────────────────────────────────────────
 def export_to_csv(results: list, filename: str = "vcp_scan_results.csv"):
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     rows = []
     for r in results:
         if r.get("error"):
@@ -602,8 +607,9 @@ def export_to_csv(results: list, filename: str = "vcp_scan_results.csv"):
             "Pivot_Price"       : r["pivot_price"],
         })
     df = pd.DataFrame(rows)
-    df.to_csv(filename, index=False)
-    print(f"\n  Results saved to {filename}")
+    output_path = os.path.join(OUTPUT_DIR, filename)
+    df.to_csv(output_path, index=False)
+    print(f"\n  Results saved to {output_path}")
     return df
 
 
