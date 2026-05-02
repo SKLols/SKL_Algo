@@ -31,7 +31,10 @@ class TelegramNotifier:
                 "parse_mode": "HTML"
             }
             response = requests.post(url, json=payload, timeout=10)
-            return response.status_code == 200
+            if response.status_code != 200:
+                print(f"❌ Telegram send_message failed: {response.status_code} {response.text}")
+                return False
+            return True
         except Exception as e:
             print(f"❌ Telegram message error: {e}")
             return False
@@ -52,11 +55,34 @@ class TelegramNotifier:
                     "parse_mode": "HTML"
                 }
                 response = requests.post(url, files=files, data=payload, timeout=30)
-                return response.status_code == 200
+                if response.status_code != 200:
+                    print(f"❌ Telegram send_file failed: {response.status_code} {response.text}")
+                    return False
+                return True
         except Exception as e:
             print(f"❌ Telegram file upload error: {e}")
             return False
     
+    def get_updates(self, offset: int | None = None, timeout: int = 5):
+        """Poll Telegram getUpdates for incoming bot messages."""
+        try:
+            url = f"{self.base_url}/getUpdates"
+            params = {"timeout": timeout}
+            if offset is not None:
+                params["offset"] = offset
+            response = requests.get(url, params=params, timeout=timeout + 5)
+            if response.status_code != 200:
+                print(f"❌ Telegram get_updates failed: {response.status_code} {response.text}")
+                return None
+            data = response.json()
+            if not data.get("ok"):
+                print(f"❌ Telegram get_updates returned error: {data}")
+                return None
+            return data.get("result", [])
+        except Exception as e:
+            print(f"❌ Telegram get_updates error: {e}")
+            return None
+
     def send_scan_report(self, results: List[Dict], output_file: str = None, 
                         grades_to_show: List[str] = None):
         """

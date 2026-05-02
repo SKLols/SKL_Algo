@@ -5,10 +5,10 @@ Get your chat ID from: https://t.me/userinfobot
 """
 
 # Your Telegram Bot Token (from @BotFather)
-TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+TELEGRAM_BOT_TOKEN = "8604262154:AAFYsIfMmAx2wEmS5HehXRuVKteVpubZ4oA"
 
 # Your Chat ID where alerts will be sent
-TELEGRAM_CHAT_ID = "YOUR_CHAT_ID_HERE"
+TELEGRAM_CHAT_ID = "379053967"
 
 # Market timing (Indian market - displayed in Germany timezone)
 # Indian market opens at 9:15 AM IST, closes at 3:30 PM IST
@@ -26,6 +26,12 @@ TIMEZONE = "Europe/Berlin"
 # Setup filter levels (which grades to report)
 # Options: "A", "B", "C", "D" or "all"
 SETUP_GRADES = ["A", "B"]  # Report only Grade A and B setups
+
+# Manual Telegram command to trigger an immediate scan
+TELEGRAM_MANUAL_RUN_COMMAND = "/run_manual"
+
+# Poll interval for Telegram command checks (seconds)
+TELEGRAM_COMMAND_POLL_INTERVAL = 20
 
 # Enable/Disable notifications
 NOTIFY_ON_TREND_PASS = True

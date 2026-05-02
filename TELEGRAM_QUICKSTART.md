@@ -55,6 +55,15 @@ python scheduler.py --run-once close   # Market close
 # Run scheduler manually (Ctrl+C to stop)
 python scheduler.py
 
+# Run manual scan from Telegram
+While `scheduler.py` is running, open Telegram (desktop or mobile), go to your bot chat, and send:
+
+```text
+/run_manual
+```
+
+The scheduler will acknowledge the command and run the scan immediately.
+
 # Setup Windows Task Scheduler
 python setup_scheduler.py
 ```

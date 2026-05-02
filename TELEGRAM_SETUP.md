@@ -155,6 +155,18 @@ python scheduler.py --run-once open
 python scheduler.py --run-once close
 ```
 
+### Manual trigger from Telegram
+You can also start a scan directly from Telegram using the mobile app or any Telegram client.
+
+1. Open Telegram and go to your bot chat.
+2. Send the command:
+   ```text
+   /run_manual
+   ```
+3. The scheduler must be running in the background (via `python scheduler.py`) for this to work.
+
+The bot will reply with a confirmation message and then run the scan immediately.
+
 ---
 
 ## Step 8: Monitor and Verify

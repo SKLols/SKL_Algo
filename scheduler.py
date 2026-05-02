@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import telegram_config
 from telegram_notifier import TelegramNotifier, test_telegram_connection
 from scanner import run_scanner
-from output.exporter import export_to_excel
+from output.exporter import export_all_to_excel as export_to_excel
 
 
 class VCPScheduler:
@@ -31,9 +31,15 @@ class VCPScheduler:
         )
         self.timezone = pytz.timezone(telegram_config.TIMEZONE)
         self.output_dir = os.path.join(os.path.dirname(__file__), "output")
+        self.update_offset = None
+        self.scan_running = False
         
     def run_scan(self, scan_type: str = "market_open"):
         """Execute full scan pipeline and send results to Telegram."""
+        if self.scan_running:
+            print("⚠️ Scan already running, skipping new request.")
+            return
+        self.scan_running = True
         try:
             current_time = datetime.now(self.timezone).strftime("%Y-%m-%d %H:%M:%S")
             print(f"\n{'='*70}")
@@ -71,6 +77,8 @@ class VCPScheduler:
             print(f"❌ Scan error: {e}")
             error_msg = f"❌ VCP Scanner Error ({scan_type}):\n{str(e)}"
             self.notifier.send_alert("Scanner Error", error_msg)
+        finally:
+            self.scan_running = False
     
     def schedule_jobs(self):
         """Setup daily scan jobs at specified times."""
@@ -93,14 +101,42 @@ class VCPScheduler:
         print("✓ Jobs scheduled!")
         print("\nScheduler running. Press Ctrl+C to stop.\n")
     
+    def poll_telegram_commands(self):
+        """Check Telegram updates for manual run requests."""
+        updates = self.notifier.get_updates(
+            offset=self.update_offset,
+            timeout=telegram_config.TELEGRAM_COMMAND_POLL_INTERVAL
+        )
+        if not updates:
+            return
+
+        for update in updates:
+            self.update_offset = update["update_id"] + 1
+            message = update.get("message") or update.get("edited_message")
+            if not message:
+                continue
+            chat = message.get("chat", {})
+            chat_id = str(chat.get("id"))
+            text = message.get("text", "")
+            if chat_id != str(telegram_config.TELEGRAM_CHAT_ID):
+                continue
+            if text.strip().lower().startswith(telegram_config.TELEGRAM_MANUAL_RUN_COMMAND):
+                self.notifier.send_message("✅ Manual scan command received. Starting scan now.")
+                self.run_scan(scan_type="manual")
+
     def run_scheduler(self):
         """Start the scheduler loop."""
         self.schedule_jobs()
         
         # Keep scheduler running
+        next_poll = time.time()
+        poll_interval = telegram_config.TELEGRAM_COMMAND_POLL_INTERVAL
         while True:
             schedule.run_pending()
-            time.sleep(60)  # Check every minute
+            if time.time() >= next_poll:
+                self.poll_telegram_commands()
+                next_poll = time.time() + poll_interval
+            time.sleep(1)  # Check frequently for scheduled jobs and commands
 
 
 def run_scheduler_daemon():
