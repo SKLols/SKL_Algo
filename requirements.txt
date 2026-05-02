@@ -3,3 +3,8 @@ numpy
 yfinance
 requests
 openpyxl
+python-telegram-bot
+schedule
+pytz
+mplfinance
+matplotlib
