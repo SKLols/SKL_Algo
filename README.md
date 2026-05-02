@@ -66,15 +66,16 @@ output/
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/yourusername/stock-scanner.git
-cd stock-scanner
+git clone https://github.com/SKLols/SKL_Algo.git
+cd SKL_Algo
 
-# 2. Create and activate a virtual environment (recommended)
-python -m venv venv
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # macOS / Linux
+# 2. Create and activate a virtual conda environment (recommended)
+conda create --name algo_trading python=3.10 -y
+conda activate algo_trading         # Windows
 
 # 3. Install dependencies
+pip install -r requirements.txt
+#OR
 pip install yfinance pandas numpy mplfinance matplotlib openpyxl
 ```
 
