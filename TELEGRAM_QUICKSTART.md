@@ -37,8 +37,8 @@ python setup_scheduler.py
 ```
 
 This creates Windows Task Scheduler tasks to run:
-- **10:00 AM** — Market Open Scan
-- **3:30 PM** — Market Close Scan
+- **6:00 AM CET** — Indian Market Open Scan (30 mins after NSE opens)
+- **11:00 AM CET** — Indian Market Close Scan (30 mins before NSE closes)
 
 ---
 
@@ -63,7 +63,7 @@ python setup_scheduler.py
 
 ## What You'll Receive
 
-**2 Telegram messages per trading day:**
+**2 Telegram messages per trading day (India time):**
 - ✅ Summary (total scanned, setups found, grades)
 - ✅ Top Grade A & B setups listed
 - ✅ Excel file with complete results
@@ -71,7 +71,7 @@ python setup_scheduler.py
 Example:
 ```
 📊 VCP Scanner Report
-2026-05-03 10:05:32
+2026-05-03 06:05:32
 
 Summary:
 • Total scanned: 500
@@ -94,12 +94,12 @@ Edit `telegram_config.py`:
 # Which grades to report
 SETUP_GRADES = ["A", "B"]  # Change to ["A", "B", "C", "D"] for more
 
-# Change market times (24-hour format)
-MARKET_OPEN_TIME = "10:00"   # 30 min after market opens
-MARKET_CLOSE_TIME = "15:30"  # 30 min before close
+# Adjust times (Germany timezone - auto-adjusts for DST)
+MARKET_OPEN_TIME = "06:00"   # 30 min after NSE opens
+MARKET_CLOSE_TIME = "11:00"  # 30 min before NSE closes
 
-# Change timezone
-TIMEZONE = "US/Eastern"  # or "US/Pacific", etc.
+# Timezone (already set to Europe/Berlin)
+TIMEZONE = "Europe/Berlin"
 ```
 
 ---
@@ -125,6 +125,24 @@ See `TELEGRAM_SETUP.md` for detailed setup instructions.
 **No Excel attachment?**
 - Check `output/` folder has write permissions
 - Verify file was created in output folder
+
+---
+
+## 📍 Time Zone Info
+
+**Germany (your location):**
+- CET: UTC+1 (winter, Nov-Mar)
+- CEST: UTC+2 (summer, Mar-Oct)
+- Automatically handles DST changes
+
+**Indian Market (NSE):**
+- IST: UTC+5:30 (no DST)
+- Opens: 9:15 AM IST
+- Closes: 3:30 PM IST
+
+**Your alert times in Germany:**
+- 6:00 AM CET/CEST = ~30 mins after NSE opens
+- 11:00 AM CET/CEST = ~30 mins before NSE closes
 
 ---
 

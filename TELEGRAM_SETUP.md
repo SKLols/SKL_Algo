@@ -4,9 +4,9 @@ Complete guide to set up automated VCP scanner notifications on Telegram with da
 
 ## Overview
 
-The scanner will automatically run **2 times daily**:
-- **10:00 AM ET** — 30 minutes after market open (9:30 AM)
-- **15:30 (3:30 PM) ET** — 30 minutes before market close (4:00 PM)
+The scanner will automatically run **2 times daily** (India time, displayed in Germany):
+- **6:00 AM CET/CEST** — 30 minutes after NSE market open (9:15 AM IST)
+- **11:00 AM CET/CEST** — 30 minutes before NSE market close (3:30 PM IST)
 
 Results are sent to Telegram with:
 - ✅ Summary statistics
@@ -59,9 +59,16 @@ TELEGRAM_BOT_TOKEN = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
 # Your Chat ID where alerts will be sent
 TELEGRAM_CHAT_ID = "987654321"
 
-# Market timing (US ET) - adjust if needed
-MARKET_OPEN_TIME = "10:00"      # 30 mins after market opens
-MARKET_CLOSE_TIME = "15:30"     # 30 mins before market closes
+# Market timing (India/Germany timezone)
+# NSE opens at 9:15 AM IST, closes at 3:30 PM IST
+# Times below are in Germany time (CET/CEST, auto-adjusts for DST):
+#   6:00 AM = ~30 mins after NSE opens
+#   11:00 AM = ~30 mins before NSE closes
+MARKET_OPEN_TIME = "06:00"      # 30 mins after NSE opens (Germany time)
+MARKET_CLOSE_TIME = "11:00"     # 30 mins before NSE closes (Germany time)
+
+# Timezone (Germany - handles DST automatically)
+TIMEZONE = "Europe/Berlin"
 
 # Setup filter levels (Grade A and B recommended)
 SETUP_GRADES = ["A", "B"]
@@ -123,15 +130,15 @@ This creates 2 scheduled tasks in Windows Task Scheduler:
 1. Open **Task Scheduler** (Win + R → `taskschd.msc`)
 2. Create two tasks:
 
-**Task 1: Market Open**
+**Task 1: Market Open (6:00 AM)**
 - **Name**: VCP Scanner - Market Open
-- **Trigger**: Daily at 10:00 AM
+- **Trigger**: Daily at 6:00 AM
 - **Action**: Run script `run_scanner_open.vbs`
 - **Location**: Scanner project directory
 
-**Task 2: Market Close**
+**Task 2: Market Close (11:00 AM)**
 - **Name**: VCP Scanner - Market Close
-- **Trigger**: Daily at 15:30 (3:30 PM)
+- **Trigger**: Daily at 11:00 AM
 - **Action**: Run script `run_scanner_close.vbs`
 
 ---
@@ -193,13 +200,25 @@ Edit `telegram_notifier.py` → `send_scan_report()` to change:
 - Message format
 - Additional filters
 
-### Change Market Timezone
+### Change Market Timezone or Times
 Edit `telegram_config.py`:
 ```python
-TIMEZONE = "US/Eastern"  # Change to your timezone
+# For India (NSE market)
+MARKET_OPEN_TIME = "06:00"    # 30 min after NSE opens (Germany time)
+MARKET_CLOSE_TIME = "11:00"   # 30 min before NSE closes (Germany time)
+TIMEZONE = "Europe/Berlin"    # Germany timezone (auto-adjusts DST)
+
+# Times are automatically converted based on TIMEZONE setting
+# pytz handles Daylight Saving Time changes automatically
 ```
 
 Available timezones: `pytz.all_timezones`
+
+Common timezone examples:
+- `"Europe/Berlin"` — Germany (CET/CEST)
+- `"Asia/Kolkata"` — India (IST)
+- `"US/Eastern"` — US Eastern (EST/EDT)
+- `"Europe/London"` — UK (GMT/BST)
 
 ### Disable Scheduled Tasks
 ```bash
@@ -250,6 +269,35 @@ Full results attached in Excel file
 - [ ] Task Scheduler configured
 - [ ] First manual run successful: `python scheduler.py --run-once open`
 - [ ] Received Telegram message with Excel attachment
+
+---
+
+## 📍 Time Zone Configuration
+
+Your setup is configured for:
+- **Your Location**: Germany (Europe/Berlin)
+- **Market**: Indian NSE (UTC+5:30)
+- **Your Timezone**: CET (UTC+1) / CEST (UTC+2, summer)
+
+### Alert Times Explained
+
+**India Time → Germany Time**
+
+NSE Market Hours:
+- Opens: 9:15 AM IST
+- Closes: 3:30 PM IST
+
+Your Alert Times (Germany):
+- **6:00 AM CET/CEST** = 9:45 AM IST (30 min after NSE opens)
+- **11:00 AM CET/CEST** = 3:00 PM IST (30 min before NSE closes)
+
+### DST Handling
+
+The scheduler automatically handles Daylight Saving Time:
+- **Winter (Nov-Mar)**: CET (UTC+1) — 4.5 hours behind IST
+- **Summer (Mar-Oct)**: CEST (UTC+2) — 3.5 hours behind IST
+
+No manual time changes needed! ✅
 
 ---
 

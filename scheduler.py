@@ -1,6 +1,7 @@
 """
 Scheduler — Automated daily VCP scans with Telegram notifications
-Runs scanner at market open (10:00 AM) and market close (3:30 PM)
+Runs scanner for Indian market (NSE) at market open and close
+Times shown in Germany timezone (CET/CEST, auto-adjusts for DST)
 """
 
 import schedule
@@ -77,13 +78,13 @@ class VCPScheduler:
         print(f"   Market Open (30 min after):  {telegram_config.MARKET_OPEN_TIME} {telegram_config.TIMEZONE}")
         print(f"   Market Close (30 min before): {telegram_config.MARKET_CLOSE_TIME} {telegram_config.TIMEZONE}")
         
-        # Schedule market open scan (10:00 AM ET)
+        # Schedule market open scan (6:00 AM CET/CEST ≈ 9:45 AM IST)
         schedule.every().day.at(telegram_config.MARKET_OPEN_TIME).do(
             self.run_scan, 
             scan_type="market_open"
         )
         
-        # Schedule market close scan (3:30 PM ET)
+        # Schedule market close scan (11:00 AM CET/CEST ≈ 3:00 PM IST)
         schedule.every().day.at(telegram_config.MARKET_CLOSE_TIME).do(
             self.run_scan, 
             scan_type="market_close"

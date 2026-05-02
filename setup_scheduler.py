@@ -65,9 +65,9 @@ def setup_task_scheduler():
     scanner_dir = Path(__file__).parent
     vbs_open, vbs_close = create_vbs_wrapper()
     
-    # Market Open Task (10:00 AM)
-    print("\n1️⃣  Creating market open task (10:00 AM)...")
-    cmd_open = f'''schtasks /create /tn "VCP Scanner - Market Open" /tr "{vbs_open}" /sc daily /st 10:00 /f'''
+    # Market Open Task (6:00 AM CET/CEST = ~30 mins after NSE opens)
+    print("\n1️⃣  Creating market open task (6:00 AM CET/CEST - Indian market)...")
+    cmd_open = f'''schtasks /create /tn "VCP Scanner - Market Open" /tr "{vbs_open}" /sc daily /st 06:00 /f'''
     
     try:
         result = subprocess.run(cmd_open, shell=True, capture_output=True, text=True)
@@ -78,9 +78,9 @@ def setup_task_scheduler():
     except Exception as e:
         print(f"   ❌ Error: {e}")
     
-    # Market Close Task (3:30 PM)
-    print("\n2️⃣  Creating market close task (15:30)...")
-    cmd_close = f'''schtasks /create /tn "VCP Scanner - Market Close" /tr "{vbs_close}" /sc daily /st 15:30 /f'''
+    # Market Close Task (11:00 AM CET/CEST = ~30 mins before NSE closes)
+    print("\n2️⃣  Creating market close task (11:00 AM CET/CEST - Indian market)...")
+    cmd_close = f'''schtasks /create /tn "VCP Scanner - Market Close" /tr "{vbs_close}" /sc daily /st 11:00 /f'''
     
     try:
         result = subprocess.run(cmd_close, shell=True, capture_output=True, text=True)
@@ -98,9 +98,9 @@ def setup_task_scheduler():
     print("  1. Open Task Scheduler")
     print("  2. Look for 'VCP Scanner - Market Open' and 'VCP Scanner - Market Close'")
     print("  3. Right-click → Properties to adjust time/settings if needed")
-    print("\nTasks will run daily at:")
-    print("  • 10:00 AM - Market Open Scan")
-    print("  • 15:30 (3:30 PM) - Market Close Scan")
+    print("\nTasks will run daily at (Germany timezone):")
+    print("  • 6:00 AM CET/CEST - Market Open Scan (~30 min after NSE opens at 9:15 AM IST)")
+    print("  • 11:00 AM CET/CEST - Market Close Scan (~30 min before NSE closes at 3:30 PM IST)")
 
 
 if __name__ == "__main__":

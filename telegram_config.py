@@ -10,13 +10,18 @@ TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
 # Your Chat ID where alerts will be sent
 TELEGRAM_CHAT_ID = "YOUR_CHAT_ID_HERE"
 
-# Market timing (US ET)
-# Scanner will run at these times (24-hour format)
-MARKET_OPEN_TIME = "10:00"      # 30 mins after market opens (9:30 AM)
-MARKET_CLOSE_TIME = "15:30"     # 30 mins before market closes (4:00 PM)
+# Market timing (Indian market - displayed in Germany timezone)
+# Indian market opens at 9:15 AM IST, closes at 3:30 PM IST
+# Converted to Germany time (CET/CEST, handles DST automatically):
+#   - 30 mins after open (9:45 AM IST) ≈ 5:15 AM CET / 6:15 AM CEST
+#   - 30 mins before close (3:00 PM IST) ≈ 10:30 AM CET / 11:30 AM CEST
+# Note: Times below are in Germany timezone; pytz handles DST automatically
 
-# Timezone
-TIMEZONE = "US/Eastern"
+MARKET_OPEN_TIME = "06:00"      # ~30 mins after NSE opens (Germany time)
+MARKET_CLOSE_TIME = "11:00"     # ~30 mins before NSE closes (Germany time)
+
+# Timezone (Germany)
+TIMEZONE = "Europe/Berlin"
 
 # Setup filter levels (which grades to report)
 # Options: "A", "B", "C", "D" or "all"
