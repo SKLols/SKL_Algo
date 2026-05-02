@@ -49,7 +49,7 @@ scanner/
     └── exporter.py         ← Excel / CSV export
 ```
 
-Output is written to `../output/` (one level above `scanner/`):
+Output is written to `./output/` (Inside of `scanner/`):
 ```
 output/
 ├── vcp_scan_results.xlsx
