@@ -24,3 +24,12 @@ Thumbs.db
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+# Ignore output folder contents (generated files only)
+output/*
+# But keep these specific modules
+!output/__init__.py
+!output/charts.py
+!output/console.py
+!output/exporter.py
+!output/.gitkeep
