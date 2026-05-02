@@ -63,6 +63,22 @@ def export_vcp_to_excel(results: list,
     print(f"\n  Results saved → {output_path}  ({len(valid)} valid Trend+VCP rows)")
     return df_out
 
+def export_all_to_excel(results: list, filename: str = "scan_results.xlsx"):
+    output_path = os.path.join(OUTPUT_DIR, filename)
+    with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+
+        def _write(rows, sheet):
+            if rows:
+                pd.DataFrame(rows).to_excel(writer, index=False, sheet_name=sheet)
+
+        _write([r for r in results if r.get("trend_pass") and r.get("is_vcp")],        "VCP")
+        _write([r for r in results if r.get("trend_pass") and r.get("is_darvas")],     "Darvas")
+        _write([r for r in results if r.get("trend_pass") and r.get("is_powerplay")],  "PowerPlay")
+        _write([r for r in results if r.get("trend_pass") and r.get("is_breakout")],   "Breakout")
+        _write([r for r in results if r.get("trend_pass") and r.get("is_cup_handle")], "CupHandle")
+
+    print(f"\n  All setups saved → {output_path}")
+
 
 def export_breadth_to_excel(breadth_rows: list,
                              filename: str | None = None) -> pd.DataFrame:

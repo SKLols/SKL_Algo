@@ -116,13 +116,27 @@ class VCP:
 # ─────────────────────────────────────────────
 class Breakout:
     # Volume surge: breakout day volume must be ≥ this × 50-day avg
-    MIN_VOLUME_SURGE      = 1.5
+    MIN_VOLUME_SURGE        = 1.5
     # Max % below 52-week high to qualify as a valid breakout zone
-    MAX_PCT_BELOW_HIGH    = 5.0
-    # Consolidation: how many days of tight range before the breakout
-    MIN_CONSOLIDATION_DAYS= 10
-    # Tight range threshold: daily range ≤ this % of price
-    MAX_DAILY_RANGE_PCT   = 3.0
+    MAX_PCT_BELOW_HIGH      = 3.0
+    # Price must be > this % above 52w low
+    MIN_RISE_FROM_LOW_PCT   = 30.0
+    # 1-week return must exceed this % (momentum confirmation)
+    MIN_1W_RETURN_PCT       = 3.0
+    # Minimum daily volume
+    MIN_VOLUME              = 100_000
+    # Short-range base parameters (trading days)
+    SHORT_BASE_MIN_DAYS     = 10
+    SHORT_BASE_MAX_DAYS     = 20
+    MAX_BASE_RANGE_PCT      = 8.0    # tight range inside the short base
+    # Long-range base parameters (weeks)
+    LONG_BASE_MIN_WEEKS     = 6
+    LONG_BASE_MAX_WEEKS     = 52
+    LONG_BASE_RANGE_PCT     = 25.0   # allowed range inside the long base
+    # Fundamental thresholds
+    MIN_PROFIT_GROWTH_PCT   = 15.0
+    MIN_SALES_GROWTH_PCT    = 10.0
+    MIN_MARKET_CAP          = 200    # Cr or $M
 
 # ─────────────────────────────────────────────
 # DARVAS BOX SETUP  (add parameters when you build this)
@@ -136,6 +150,17 @@ class Darvas:
     MIN_BOX_WEEKS         = 3
     # Volume must drop ≥ this % inside the box vs. the breakout bar
     MIN_VOLUME_DECLINE_PCT = 20.0
+    # Maximum box range (high to low) as % of box top — tighter = better
+    MAX_BOX_RANGE_PCT     = 15.0
+    # Price must be within this % of 52w high
+    MAX_PCT_BELOW_HIGH    = 10.0
+    # Price must have risen this % above its 52w low (strong prior move)
+    MIN_RISE_FROM_LOW_PCT = 100.0
+    # Minimum and maximum price filter
+    MIN_PRICE             = 10.0
+    MAX_PRICE             = 1000.0
+    # Minimum daily volume
+    MIN_VOLUME            = 100_000
 
 # ─────────────────────────────────────────────
 # POWERPLAY SETUP  (add parameters when you build this)
@@ -147,6 +172,23 @@ class PowerPlay:
     MIN_POWER_DAY_VOLUME    = 1.25
     # How many recent sessions to scan for power days
     LOOKBACK_DAYS           = 20
+    # 1-year return must exceed this % (strong prior uptrend)
+    MIN_1Y_RETURN_PCT       = 100.0
+    # Price must be within this range below 52w high (1–10%)
+    MIN_PCT_BELOW_HIGH      = 1.0
+    MAX_PCT_BELOW_HIGH      = 10.0
+    # Price must be > this % above 52w low
+    MIN_RISE_FROM_LOW_PCT   = 100.0
+    # 10-day price range must be ≤ this % (coiling / tightening)
+    MAX_10D_RANGE_PCT       = 5.0
+    # Minimum daily volume
+    MIN_VOLUME              = 100_000
+    # Fundamental thresholds (used when _get_fundamentals is enabled)
+    MIN_PROFIT_GROWTH_PCT   = 25.0   # YoY quarterly EPS growth %
+    MIN_SALES_GROWTH_PCT    = 20.0   # YoY quarterly revenue growth %
+    MIN_ROE_PCT             = 15.0   # Return on equity %
+    MAX_DEBT_EQUITY         = 1.0    # Debt-to-equity ratio
+    MIN_MARKET_CAP          = 500    # Cr (NSE) or $M (US)
 
 # ─────────────────────────────────────────────
 # CUP & HANDLE SETUP  (add parameters when you build this)
@@ -165,6 +207,21 @@ class CupHandle:
     MAX_HANDLE_DAYS         = 15
     # Handle must form in the upper half of the cup
     HANDLE_UPPER_HALF       = True
+    # Price range vs 52w high
+    MIN_PCT_BELOW_HIGH      = 2.0
+    MAX_PCT_BELOW_HIGH      = 10.0
+    # Price must be > this % above 52w low
+    MIN_RISE_FROM_LOW_PCT   = 50.0
+    # Return thresholds
+    MIN_6M_RETURN_PCT       = 10.0
+    MIN_1Y_RETURN_PCT       = 20.0
+    # Minimum daily volume
+    MIN_VOLUME              = 50_000
+    # Fundamental thresholds
+    MIN_PROFIT_GROWTH_PCT   = 20.0
+    MIN_SALES_GROWTH_PCT    = 15.0
+    MAX_DEBT_EQUITY         = 1.5
+    MIN_MARKET_CAP          = 500    # Cr or $M
 
 # ─────────────────────────────────────────────
 # MARKET BREADTH
