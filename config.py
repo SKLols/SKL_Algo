@@ -26,7 +26,7 @@ CHART_DIR  = os.path.join(OUTPUT_DIR, "charts")
 # ─────────────────────────────────────────────
 class Universe:
     # Which universe to scan — "NSE500", "SP500", or "CUSTOM"
-    ACTIVE = "SP500"
+    ACTIVE = "NSE500"
 
     # NSE Nifty 500 source URL
     NSE500_URL = "https://archives.nseindia.com/content/indices/ind_nifty500list.csv"
