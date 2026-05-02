@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Minervini VCP Pattern Scanner — Python Script
 Detects: Swing Highs/Lows, VCP contractions, Pivot Point
@@ -8,7 +9,15 @@ Usage:
     python vcp_scanner.py
     Modify STOCKS list with NSE symbols (e.g., "RELIANCE.NS")
 """
+# ========== FIX 1: Set non-interactive backend BEFORE importing pyplot ==========
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend (no GUI, avoids threading issues)
+# ===============================================================================
+
 import os
+import warnings
+warnings.filterwarnings('ignore')  # Suppress deprecation warnings
+
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -16,6 +25,10 @@ import mplfinance as mpf
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 from datetime import datetime, timedelta
+
+# ========== FIX 2: Configure matplotlib to be thread-safe ==========
+plt.switch_backend('Agg')  # Ensure Agg backend is used
+# ===================================================================
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUTPUT_DIR = os.path.join(ROOT_DIR, "output")
@@ -28,17 +41,21 @@ BENCHMARK_SYMBOLS = {
     "NSE": "^NSEI",
     "US" : "^GSPC"
 }
+
 def get_benchmark_symbol(symbol: str) -> str:
     return BENCHMARK_SYMBOLS["NSE"] if symbol.endswith(".NS") else BENCHMARK_SYMBOLS["US"]
+
 def get_benchmark_name(symbol: str) -> str:
     return "Nifty 50" if symbol.endswith(".NS") else "S&P 500"
-def get_benchmark_data(symbol: str, start, end):
+
+def get_benchmark_data(symbol, start, end):
     cache_key = (symbol, start, end)
     if cache_key in BENCHMARK_CACHE:
         return BENCHMARK_CACHE[cache_key]
     df = yf.download(symbol, start=start, end=end, progress=False, auto_adjust=True)
     BENCHMARK_CACHE[cache_key] = df
     return df
+
 def compute_rs(symbol: str, df: pd.DataFrame, benchmark_df: pd.DataFrame) -> float | None:
     if df.empty or benchmark_df.empty:
         return None
@@ -78,6 +95,7 @@ def compute_rs(symbol: str, df: pd.DataFrame, benchmark_df: pd.DataFrame) -> flo
     symbol_return = float(symbol_close.iloc[-1]) / symbol_start - 1
     benchmark_return = float(benchmark_close.iloc[-1]) / bench_start - 1
     return round(100 * (symbol_return - benchmark_return), 2)
+
 # ─────────────────────────────────────────────
 # CONFIG — edit these
 # ─────────────────────────────────────────────
@@ -87,12 +105,14 @@ def get_nse500_symbols():
     symbols = df["Symbol"].tolist()
     symbols = [s + ".NS" for s in symbols]
     return symbols
+
 def get_sp500_symbols():
     url = "https://raw.githubusercontent.com/datasets/s-and-p-500-companies/master/data/constituents.csv"
     df = pd.read_csv(url)
     symbols = df["Symbol"].tolist()
     symbols = [s.replace(".", "-") for s in symbols]
     return symbols
+
 # STOCKS = get_nse500_symbols()
 STOCKS = get_sp500_symbols()
 # STOCKS = [
@@ -111,6 +131,7 @@ MIN_CONTRACTIONS = 2     # Minimum number of VCP contractions required
 MAX_FINAL_CONTRACTION = 10.0   # Final contraction must be <= 10%
 MIN_VOLUME_DRY_UP = 0.9  # Volume on final contraction <= 0.9x of avg
 CHART_LOOKBACK_DAYS = 180  # How many days to show on each VCP chart
+
 # ─────────────────────────────────────────────
 # SWING HIGH / LOW DETECTION
 # Swings are selected using CLOSE only
@@ -128,6 +149,7 @@ def find_swing_highs(close: pd.Series, n: int = 5) -> pd.Series:
         if close.iloc[i] > window_left.max() and close.iloc[i] > window_right.max():
             highs.iloc[i] = True
     return highs
+
 def find_swing_lows(close: pd.Series, n: int = 5) -> pd.Series:
     """
     Returns a boolean Series. True where close is a swing low.
@@ -140,6 +162,7 @@ def find_swing_lows(close: pd.Series, n: int = 5) -> pd.Series:
         if close.iloc[i] < window_left.min() and close.iloc[i] < window_right.min():
             lows.iloc[i] = True
     return lows
+
 # ─────────────────────────────────────────────
 # TREND TEMPLATE CHECK (keep as before)
 # ─────────────────────────────────────────────
@@ -177,6 +200,7 @@ def check_trend_template(df: pd.DataFrame) -> dict:
     conditions["pct_above_52w_low"]  = round(pct_above_low, 1)
     conditions["pct_below_52w_high"] = round(pct_below_high, 1)
     return conditions
+
 # ─────────────────────────────────────────────
 # HELPER FUNCTIONS FOR VCP
 # ─────────────────────────────────────────────
@@ -193,13 +217,16 @@ def valid_vcp_pair(prev_c: dict, next_c: dict) -> bool:
     upper_ok = next_c["top_close"] <= prev_c["top_high"]
     lower_ok = next_c["bottom_close"] >= prev_c["bottom_low"]
     return upper_ok and lower_ok
+
 def contraction_tightening(prev_c: dict, next_c: dict) -> bool:
     """Informational check: next contraction % <= previous contraction %."""
     return next_c["contraction_pct"] <= prev_c["contraction_pct"]
+
 def volume_declining(vols: list, allowed_violations: int = 1) -> bool:
     """Volume should generally decline across contractions."""
     violations = sum(1 for i in range(len(vols) - 1) if vols[i] < vols[i + 1])
     return violations <= allowed_violations
+
 def get_recent_pairs_and_triplet(contractions: list):
     """
     Returns:
@@ -211,6 +238,7 @@ def get_recent_pairs_and_triplet(contractions: list):
     pair_prev2 = contractions[-3:-1] if len(contractions) >= 3 else None
     triplet = contractions[-3:] if len(contractions) >= 3 else None
     return pair_last2, pair_prev2, triplet
+
 # ─────────────────────────────────────────────
 # VCP DETECTION
 # ─────────────────────────────────────────────
@@ -422,8 +450,9 @@ def detect_vcp(df: pd.DataFrame, swing_n: int = 5) -> dict:
         result["is_vcp"] = False
         result["vcp_quality"] = "Fail"
     return result
+
 # ─────────────────────────────────────────────
-# CHART VISUALISATION  ← only new code below
+# CHART VISUALISATION ← FIXED: No GUI, no threading issues
 # ─────────────────────────────────────────────
 _GRADE_COLOR = {"A": "#00c853", "B": "#2979ff", "C": "#ff6d00", "D": "#aa00ff"}
 _EMA_STYLE   = {
@@ -455,7 +484,8 @@ def plot_vcp_chart(symbol: str, df_full: pd.DataFrame, vcp: dict,
       • Volume panel with dry-up highlight
       • Grade badge and score
       • Trend template summary footer
-    Only this function is new — everything else above is unchanged.
+    
+    FIX: Uses Agg backend (no GUI) and properly closes all figures.
     """
     grade       = _grade_from_quality(vcp.get("vcp_quality", ""))
     grade_color = _GRADE_COLOR.get(grade, "#9e9e9e")
@@ -667,9 +697,14 @@ def plot_vcp_chart(symbol: str, df_full: pd.DataFrame, vcp: dict,
                     labelcolor="#e0e0e0", ncol=4, framealpha=0.85)
 
     fig.patch.set_facecolor("#0d0d0d")
+    
+    # ========== FIX 3: Save and close properly (no plt.show()) ==========
     plt.savefig(save_path, dpi=130, bbox_inches="tight",
                 facecolor="#0d0d0d", edgecolor="none")
-    plt.close(fig)
+    plt.close(fig)  # Close the figure to free memory
+    plt.close('all')  # Extra safety: close all figures
+    # ====================================================================
+    
     print(f"  Chart → {save_path}")
 
 # ─────────────────────────────────────────────
@@ -754,6 +789,7 @@ def scan_stock(symbol: str) -> dict:
         "vcp_score_bonus" : vcp_score_bonus,
         "error"         : None,
     }
+
 def print_result(r: dict):
     sep = "─" * 60
     print(f"\n{sep}")
@@ -784,6 +820,7 @@ def print_result(r: dict):
     print(f"\n  Notes:")
     for note in r["vcp_notes"]:
         print(f"    · {note}")
+
 def run_scanner():
     print("=" * 60)
     print("  Minervini VCP Scanner")
@@ -828,6 +865,7 @@ def run_scanner():
                   f"Pivot: ₹{r['pivot_price']}  "
                   f"Quality: {r['vcp_quality']}")
     return results
+
 # ─────────────────────────────────────────────
 # OPTIONAL: Export to Excel
 # ─────────────────────────────────────────────
@@ -870,6 +908,7 @@ def export_to_excel(results: list, filename: str = "vcp_scan_results.xlsx"):
         df.to_excel(writer, index=False, sheet_name="VCP_Setups")
     print(f"\n  Results saved to {output_path} ({len(valid_results)} valid Trend+VCP rows)")
     return df
+
 # ─────────────────────────────────────────────
 # RUN
 # ─────────────────────────────────────────────
