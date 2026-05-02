@@ -19,6 +19,78 @@ from datetime import datetime, timedelta
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUTPUT_DIR = os.path.join(ROOT_DIR, "output")
+BENCHMARK_CACHE = {}
+BENCHMARK_SYMBOLS = {
+    "NSE": "^NSEI",
+    "US" : "^GSPC"
+}
+
+
+def get_benchmark_symbol(symbol: str) -> str:
+    return BENCHMARK_SYMBOLS["NSE"] if symbol.endswith(".NS") else BENCHMARK_SYMBOLS["US"]
+
+
+def get_benchmark_name(symbol: str) -> str:
+    return "Nifty 50" if symbol.endswith(".NS") else "S&P 500"
+
+
+def get_benchmark_data(symbol: str, start, end):
+    cache_key = (symbol, start, end)
+    if cache_key in BENCHMARK_CACHE:
+        return BENCHMARK_CACHE[cache_key]
+
+    df = yf.download(symbol, start=start, end=end, progress=False, auto_adjust=True)
+    BENCHMARK_CACHE[cache_key] = df
+    return df
+
+
+def compute_rs(symbol: str, df: pd.DataFrame, benchmark_df: pd.DataFrame) -> float | None:
+    if df.empty or benchmark_df.empty:
+        return None
+
+    def _extract_close(series_or_df):
+        if isinstance(series_or_df, pd.Series):
+            return series_or_df
+        if isinstance(series_or_df, pd.DataFrame):
+            if "Close" in series_or_df.columns:
+                close = series_or_df["Close"]
+                if isinstance(close, pd.DataFrame):
+                    return close.iloc[:, 0]
+                return close
+            if isinstance(series_or_df.columns, pd.MultiIndex):
+                close_cols = [col for col in series_or_df.columns if col[-1] == "Close"]
+                if close_cols:
+                    return series_or_df[close_cols[0]]
+            return None
+        return None
+
+    if "Close" not in df.columns and not (isinstance(df.columns, pd.MultiIndex) and any(col[-1] == "Close" for col in df.columns)):
+        return None
+    if "Close" not in benchmark_df.columns and not (isinstance(benchmark_df.columns, pd.MultiIndex) and any(col[-1] == "Close" for col in benchmark_df.columns)):
+        return None
+
+    symbol_close = _extract_close(df)
+    benchmark_close = _extract_close(benchmark_df)
+
+    if symbol_close is None or benchmark_close is None:
+        return None
+
+    if len(symbol_close) >= 252:
+        symbol_start = float(symbol_close.iloc[-252])
+    else:
+        symbol_start = float(symbol_close.iloc[0])
+
+    if len(benchmark_close) >= 252:
+        bench_start = float(benchmark_close.iloc[-252])
+    else:
+        bench_start = float(benchmark_close.iloc[0])
+
+    if symbol_start <= 0 or bench_start <= 0:
+        return None
+
+    symbol_return = float(symbol_close.iloc[-1]) / symbol_start - 1
+    benchmark_return = float(benchmark_close.iloc[-1]) / bench_start - 1
+    return round(100 * (symbol_return - benchmark_return), 2)
 
 
 # ─────────────────────────────────────────────
@@ -316,6 +388,13 @@ def detect_vcp(df: pd.DataFrame, swing_n: int = 5) -> dict:
     vol_dry_up = final_vol_ratio <= MIN_VOLUME_DRY_UP
     vol_shrinking = volume_declining(vols, allowed_violations=1)
 
+    within_5pct_high = False
+    if "Close" in df.columns:
+        high_52w = df["Close"].tail(252).max()
+        current_price = df["Close"].iloc[-1]
+        pct_below_high = 100 * (high_52w - current_price) / high_52w if high_52w > 0 else 100
+        within_5pct_high = pct_below_high <= 5
+
     pair_last2, pair_prev2, triplet = get_recent_pairs_and_triplet(recent_contractions)
 
     nested_last2 = False
@@ -423,16 +502,25 @@ def detect_vcp(df: pd.DataFrame, swing_n: int = 5) -> dict:
     else:
         result["notes"].append(f"{len(recent_contractions)} contractions found")
 
+    if pct_below_high <= 5:
+        score += 1
+        result["notes"].append("Price is within 5% of the 52-week high")
+
+    result["vcp_score"] = score
+
     # Final grading
     if nested_triplet and tight_final:
         result["is_vcp"] = True
         result["vcp_quality"] = "A (3-step valid VCP)"
-    elif (nested_last2 or nested_prev2) and tight_final:
+    elif nested_last2 and tight_final:
         result["is_vcp"] = True
-        result["vcp_quality"] = "B (2-step valid VCP)"
+        result["vcp_quality"] = "B (latest 2 valid VCP)"
+    elif nested_prev2 and tight_final:
+        result["is_vcp"] = True
+        result["vcp_quality"] = "C (previous 2 of last 3 valid VCP)"
     elif nested_triplet or nested_last2 or nested_prev2:
         result["is_vcp"] = True
-        result["vcp_quality"] = "C (Structure valid, needs tightening)"
+        result["vcp_quality"] = "D (Structure valid, needs tightening)"
     else:
         result["is_vcp"] = False
         result["vcp_quality"] = "Fail"
@@ -460,9 +548,14 @@ def scan_stock(symbol: str) -> dict:
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.get_level_values(0)
 
-    # 🔥 ADD THIS
     df = df.dropna(subset=["Close"])
     df = df[df["Close"] > 0]
+
+    if df.empty or len(df) < 60:
+        return {"symbol": symbol, "error": "Insufficient data"}
+
+    for period in [10, 20, 50, 150, 200]:
+        df[f"EMA_{period}"] = df["Close"].ewm(span=period, adjust=False).mean()
 
     current_price = round(float(df["Close"].iloc[-1]), 2)
 
@@ -472,7 +565,19 @@ def scan_stock(symbol: str) -> dict:
     # VCP
     vcp = detect_vcp(df, swing_n=SWING_LOOKBACK)
 
-    # Show/allow VCP only when trend template passes
+    benchmark_symbol = get_benchmark_symbol(symbol)
+    benchmark_name = get_benchmark_name(symbol)
+    benchmark_df = get_benchmark_data(benchmark_symbol, start, end)
+    rs_value = compute_rs(symbol, df, benchmark_df)
+
+    down_from_52w_high = round(trend["pct_below_52w_high"], 1)
+    within_5pct_high = trend["pct_below_52w_high"] <= 5
+
+    if within_5pct_high:
+        vcp_score_bonus = 1
+    else:
+        vcp_score_bonus = 0
+
     if not trend["all_pass"]:
         vcp["is_vcp"] = False
         if vcp["vcp_quality"] != "Fail":
@@ -487,6 +592,15 @@ def scan_stock(symbol: str) -> dict:
         "ma200"         : trend["ma200"],
         "pct_above_52w_low"  : trend["pct_above_52w_low"],
         "pct_below_52w_high" : trend["pct_below_52w_high"],
+        "ema_10"        : round(float(df["EMA_10"].iloc[-1]), 2),
+        "ema_20"        : round(float(df["EMA_20"].iloc[-1]), 2),
+        "ema_50"        : round(float(df["EMA_50"].iloc[-1]), 2),
+        "ema_150"       : round(float(df["EMA_150"].iloc[-1]), 2),
+        "ema_200"       : round(float(df["EMA_200"].iloc[-1]), 2),
+        "rs"            : rs_value,
+        "rs_index"      : benchmark_name,
+        "down_from_52w_high" : down_from_52w_high,
+        "within_5pct_high"  : within_5pct_high,
         "is_vcp"        : vcp["is_vcp"],
         "vcp_quality"   : vcp["vcp_quality"],
         "num_contractions": vcp["num_contractions"],
@@ -496,6 +610,8 @@ def scan_stock(symbol: str) -> dict:
         "vol_ratio"     : vcp.get("vol_ratio_final"),
         "contractions"  : vcp["contractions"],
         "vcp_notes"     : vcp["notes"],
+        "vcp_score"     : vcp.get("vcp_score"),
+        "vcp_score_bonus" : vcp_score_bonus,
         "error"         : None,
     }
 
@@ -557,10 +673,12 @@ def run_scanner():
 
     passed_trend = [r for r in results if r.get("trend_pass")]
     passed_vcp   = [r for r in results if r.get("is_vcp")]
-    a_quality    = [r for r in results if "A" in str(r.get("vcp_quality", ""))]
+    valid_setups = [r for r in results if r.get("trend_pass") and r.get("is_vcp")]
+    a_quality    = [r for r in valid_setups if "A" in str(r.get("vcp_quality", ""))]
 
     print(f"  Trend Template passed : {len(passed_trend)}/{len(results)}")
     print(f"  VCP detected          : {len(passed_vcp)}/{len(results)}")
+    print(f"  Trend+VCP setups      : {len(valid_setups)}/{len(results)}")
     print(f"  Grade A setups        : {len(a_quality)}/{len(results)}")
 
     if a_quality:
@@ -570,8 +688,15 @@ def run_scanner():
                   f"Pivot: ₹{r['pivot_price']}  "
                   f"Final contraction: {r['final_contraction_pct']}%")
 
-    if passed_vcp and not a_quality:
-        print(f"\n  VCP SETUPS FOUND:")
+    if valid_setups:
+        print(f"\n  VALID SETUPS (Trend + VCP):")
+        for r in valid_setups:
+            print(f"    {r['symbol']:20s}  ₹{r['current_price']}  "
+                  f"Pivot: ₹{r['pivot_price']}  "
+                  f"Quality: {r['vcp_quality']}")
+
+    elif passed_vcp:
+        print(f"\n  VCP SETUPS FOUND (trend template failed for some):")
         for r in passed_vcp:
             print(f"    {r['symbol']:20s}  ₹{r['current_price']}  "
                   f"Pivot: ₹{r['pivot_price']}  "
@@ -581,14 +706,13 @@ def run_scanner():
 
 
 # ─────────────────────────────────────────────
-# OPTIONAL: Export to CSV
+# OPTIONAL: Export to Excel
 # ─────────────────────────────────────────────
-def export_to_csv(results: list, filename: str = "vcp_scan_results.csv"):
+def export_to_excel(results: list, filename: str = "vcp_scan_results.xlsx"):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    valid_results = [r for r in results if r.get("trend_pass") and r.get("is_vcp") and not r.get("error")]
     rows = []
-    for r in results:
-        if r.get("error"):
-            continue
+    for r in valid_results:
         rows.append({
             "Symbol"            : r["symbol"],
             "Price"             : r["current_price"],
@@ -596,8 +720,17 @@ def export_to_csv(results: list, filename: str = "vcp_scan_results.csv"):
             "MA50"              : r["ma50"],
             "MA150"             : r["ma150"],
             "MA200"             : r["ma200"],
+            "EMA_10"            : r.get("ema_10"),
+            "EMA_20"            : r.get("ema_20"),
+            "EMA_50"            : r.get("ema_50"),
+            "EMA_150"           : r.get("ema_150"),
+            "EMA_200"           : r.get("ema_200"),
+            "RS"                : r.get("rs"),
+            "RS_Index"          : r.get("rs_index"),
             "Pct_Above_52w_Low" : r["pct_above_52w_low"],
             "Pct_Below_52w_High": r["pct_below_52w_high"],
+            "Down_From_52w_High": r.get("down_from_52w_high"),
+            "Within_5pct_High"  : r.get("within_5pct_high"),
             "Is_VCP"            : r["is_vcp"],
             "VCP_Quality"       : r["vcp_quality"],
             "Num_Contractions"  : r["num_contractions"],
@@ -605,11 +738,14 @@ def export_to_csv(results: list, filename: str = "vcp_scan_results.csv"):
             "Volume_Dry_Up"     : r["volume_dry_up"],
             "Vol_Ratio"         : r["vol_ratio"],
             "Pivot_Price"       : r["pivot_price"],
+            "VCP_Score"         : r.get("vcp_score"),
+            "VCP_Bonus"         : r.get("vcp_score_bonus"),
         })
     df = pd.DataFrame(rows)
     output_path = os.path.join(OUTPUT_DIR, filename)
-    df.to_csv(output_path, index=False)
-    print(f"\n  Results saved to {output_path}")
+    with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="VCP_Setups")
+    print(f"\n  Results saved to {output_path} ({len(valid_results)} valid Trend+VCP rows)")
     return df
 
 
@@ -618,4 +754,4 @@ def export_to_csv(results: list, filename: str = "vcp_scan_results.csv"):
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
     results = run_scanner()
-    export_to_csv(results)
+    export_to_excel(results)
