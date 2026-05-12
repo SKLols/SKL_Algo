@@ -9,15 +9,18 @@ Works with **NSE (India)** and **US (S&P 500)** stocks via free `yfinance` data.
 ## Features
 
 - Minervini's 8-condition **Trend Template** (Stage 2 uptrend filter)
-- **VCP detection** with candle-level nesting validation (Grade A / B / C / D)
+- **VCP** — Volatility Contraction Pattern with candle-level nesting (Grade A / B / C / D)
+- **Darvas Box** — consolidation box detection with volume compression and breakout confirmation
+- **Power Play** — explosive momentum days near 52-week highs after a strong prior move
+- **Breakout** — short-range (10–20 day) and long-range (6–52 week) base breakouts with volume surge
+- **Cup & Handle** — U-shaped base (7–65 weeks) with tight handle and pivot breakout
 - **Relative Strength** vs Nifty 50 or S&P 500
 - **Volume dry-up** detection on final contraction
 - **Dark-theme charts** — candlestick + EMA + swing markers + contraction bands + pivot line
 - **Market Breadth** — standalone check of how many stocks are in Stage 2
-- **Excel export** of all valid setups
+- **Excel export** of all valid setups (all setup types in one file)
 - **Telegram alerts** — automated daily scans sent to your Telegram chat
 - **Windows Task Scheduler** support — run scans automatically without keeping Python open
-- Modular structure — add new setups (Darvas, Breakout, Cup & Handle) with minimal changes
 
 ---
 
@@ -44,11 +47,11 @@ scanner/
 │   └── swings.py               ← Swing high/low detection on close price
 │
 ├── setups/
-│   ├── vcp.py                  ← Volatility Contraction Pattern
-│   ├── breakout.py             ← (coming) Breakout from tight range
-│   ├── darvas.py               ← (coming) Darvas Box
-│   ├── powerplay.py            ← (coming) Power Play setup
-│   └── cup_handle.py           ← (coming) Cup & Handle
+│   ├── vcp.py                  ← Volatility Contraction Pattern (Grade A/B/C/D)
+│   ├── breakout.py             ← Short-range (10–20d) and long-range (6–52w) breakouts
+│   ├── darvas.py               ← Darvas Box consolidation + volume compression
+│   ├── powerplay.py            ← Power Play — explosive move near highs after big prior run
+│   └── cup_handle.py           ← Cup & Handle — U-shaped base with tight handle
 │
 └── output/
     ├── charts.py               ← Candlestick chart generation (mplfinance)
@@ -265,53 +268,70 @@ NOTIFY_ON_VALID_SETUPS_ONLY = True  # only notify when setups exist (no empty sc
 
 ## Adding a New Setup
 
-Adding Darvas Box as an example — **only 3 files change**:
+All existing setups (VCP, Darvas, Power Play, Breakout, Cup & Handle) follow the same pattern — **only 3 files need to change**:
 
-### Step 1 — `config.py` (already done)
-The `Darvas` class with all parameters is already there. Tune the values.
+### Step 1 — `config.py`
+Add a config class with all parameters for the new setup.
 
-### Step 2 — Create `setups/darvas.py`
+### Step 2 — Create `setups/mysetup.py`
 
 ```python
-from config import Darvas as DarvasConfig
-from indicators.swings import build_alternating_swings
+from config import MySetup as MSConfig
 
-def detect_darvas(df) -> dict:
-    # your detection logic here
-    # return dict with is_darvas, box_top, box_bottom, notes, etc.
+def detect_mysetup(df, symbol="") -> dict:
+    # detection logic here
+    # return dict with is_mysetup, score, notes, etc.
     ...
 ```
 
-### Step 3 — `scanner.py` — add 3 lines
+### Step 3 — `scanner.py` — add 4 lines
 
 ```python
-# At the top with other imports:
-from setups.darvas import detect_darvas
+# Import at the top:
+from setups.mysetup import detect_mysetup
 
-# Inside scan_stock(), after the VCP block:
-darvas = detect_darvas(df)
+# In scan_stock(), run detection:
+ms = detect_mysetup(df, symbol=symbol)
 if not trend["all_pass"]:
-    darvas["is_darvas"] = False
+    ms["is_mysetup"] = False
 
 # Add to the returned dict:
-"is_darvas"   : darvas["is_darvas"],
-"darvas_notes": darvas["notes"],
+"is_mysetup"   : ms["is_mysetup"],
+"mysetup_score": ms.get("score"),
+"mysetup_notes": ms.get("notes"),
 ```
 
-That's it. Console, Excel, and chart modules need no changes until you want Darvas-specific chart annotations.
+Console, Excel, and chart modules need no changes until you want setup-specific annotations.
+
+---
+
+## Setup Scoring
+
+Each setup returns a numeric score so you can rank results:
+
+| Setup | Max Score | Key Conditions |
+|-------|-----------|----------------|
+| VCP | 11 pts | Nesting (C3→C2→C1), tight final contraction, volume dry-up |
+| Darvas Box | 12 pts | Near 52w high, box weeks/tightness, volume compression |
+| Power Play | 14 pts | MA stack, 1-year return >100%, power day, 10-day coil |
+| Breakout | 16 pts | MA stack, near high, momentum, volume surge, base type |
+| Cup & Handle | 17 pts | MA stack, cup geometry, handle retrace, volume contraction |
+
+Fundamental data (profit/sales growth, ROE, D/E) is stubbed out with `None` in `_get_fundamentals()` inside each setup file. To enable it, replace the stub with a `yfinance .info` call or a paid API.
 
 ---
 
 ## Roadmap
 
 - [x] VCP (Volatility Contraction Pattern)
+- [x] Darvas Box
+- [x] Power Play setup
+- [x] Breakout from tight range (short + long base)
+- [x] Cup & Handle
 - [x] Market Breadth (Trend Template count)
 - [x] Telegram alerts (automated daily scans)
 - [x] Windows Task Scheduler integration
-- [ ] Breakout from tight range
-- [ ] Darvas Box
-- [ ] Power Play setup
-- [ ] Cup & Handle
+- [ ] Fundamental data integration (yfinance .info or paid API)
 - [ ] Parallel scanning (`concurrent.futures`) for faster runs
 - [ ] Backtest mode — validate Grade A setups historically
 
