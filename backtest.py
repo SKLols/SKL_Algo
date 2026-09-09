@@ -56,6 +56,7 @@ import sys
 import json
 import math
 import argparse
+from collections import defaultdict
 from datetime import timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -66,8 +67,9 @@ import yfinance as yf
 sys.path.insert(0, os.path.dirname(__file__))
 
 from config import OUTPUT_DIR, Data, Benchmark, Indicators
+from config import Darvas as DarvasConfig
 from data.universe import get_symbols
-from data.fetcher import add_ema_columns, get_benchmark_data
+from data.fetcher import add_ema_columns, get_benchmark_data, compute_rs
 from indicators.trend_template import check_trend_template
 from setups.vcp import detect_vcp
 from setups.darvas import detect_darvas
@@ -75,6 +77,20 @@ from setups.powerplay import detect_powerplay
 from setups.breakout import detect_breakout
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+# Loosen Darvas Box thresholds AT RUNTIME ONLY — config.py and setups/darvas.py
+# on disk are untouched; detect_darvas() reads these same class attributes at
+# call time, so mutating them here (before any detection runs) changes its
+# behavior for this process without editing either file. The stock rules were
+# too strict for this universe (only 6-8 trades across 30 weeks): MAX_PRICE was
+# a USD-scale limit (10-1000) that excluded most INR blue-chips outright.
+DarvasConfig.MAX_PCT_BELOW_HIGH     = 20.0     # was 10.0
+DarvasConfig.MIN_RISE_FROM_LOW_PCT  = 50.0     # was 100.0
+DarvasConfig.BOX_TOLERANCE_PCT      = 3.0      # was 1.5
+DarvasConfig.MIN_BOX_WEEKS          = 2        # was 3
+DarvasConfig.MAX_BOX_RANGE_PCT      = 25.0     # was 15.0
+DarvasConfig.MIN_VOLUME_DECLINE_PCT = 10.0     # was 20.0
+DarvasConfig.MAX_PRICE              = 50_000.0 # was 1000.0 (USD-scale, wrong for INR prices)
 
 # ─────────────────────────────────────────────
 # CONSTANTS
@@ -97,6 +113,41 @@ CHECKPOINT_JSON = os.path.join(OUTPUT_DIR, "backtest_checkpoint.json")
 
 TEST_STOCK     = "AAPL"
 MINI_SCAN_SIZE = 10
+
+# ─────────────────────────────────────────────
+# SECTOR-ROTATION / RS-RANKED SELECTION (second comparison)
+# ─────────────────────────────────────────────
+# Note: no data source available (in this project or otherwise) provides
+# thematic tags like "AI theme" or "electricity theme". The closest real,
+# fetchable substitute is yfinance's per-stock `industry` field, which is far
+# more granular than the ~11 broad GICS sectors (e.g. "Utilities-Renewable",
+# "Semiconductors", "Software-Infrastructure", "Auto Manufacturers"). That is
+# what SECTOR below means throughout. It's fetched once per stock and cached
+# to disk since it doesn't change week to week.
+SECTOR_CACHE_JSON = os.path.join(OUTPUT_DIR, "sector_cache.json")
+RESULTS_XLSX_SECTOR    = os.path.join(OUTPUT_DIR, "backtest_results_sector.xlsx")
+CHECKPOINT_JSON_SECTOR = os.path.join(OUTPUT_DIR, "backtest_checkpoint_sector.json")
+
+RS_HISTORY_START = pd.Timestamp("2024-06-01")   # covers the 252-trading-day RS
+                                                 # lookback even for the first scan date
+TOP_N_PER_WEEK   = 10     # cap on new buys per week, per (case, policy)
+TOP_SECTOR_COUNT = 3      # how many best-performing sectors every case keeps
+MIN_SECTOR_SIZE  = 5      # a sector needs >= this many stocks with valid RS to be ranked
+MULTI_METHOD_BONUS = 10.0 # composite-score bonus per EXTRA method that also flagged a stock
+
+# All three cases share the SAME top-3-sector filter (rank sectors by mean RS,
+# keep only stocks in the top TOP_SECTOR_COUNT sectors). They differ only in
+# which method(s) a stock must ALSO match to enter that week's top-10:
+#   "top_sector_all_methods"    — any of the 4 methods qualifies (scored by
+#                                  RS + MULTI_METHOD_BONUS per extra method match)
+#   "top_sector_vcp_only"       — must be a VCP (grade A/B) qualifier, scored by RS alone
+#   "top_sector_powerplay_only" — must be a Power Play qualifier, scored by RS alone
+CASE_METHOD_FILTER = {
+    "top_sector_all_methods": None,
+    "top_sector_vcp_only": "VCP",
+    "top_sector_powerplay_only": "PowerPlay",
+}
+CASES = list(CASE_METHOD_FILTER.keys())
 
 TRADE_COLS = [
     "method", "policy", "symbol", "scan_date", "entry_date", "entry_price", "shares", "position_value",
@@ -186,10 +237,11 @@ def fetch_price_history(symbol: str, start_date: pd.Timestamp, end_date: pd.Time
 # ─────────────────────────────────────────────
 # SCAN LOGIC — trend template gate + all 4 setup detectors
 # ─────────────────────────────────────────────
-def scan_one_stock(symbol: str, scan_date: pd.Timestamp) -> dict:
+def scan_one_stock(symbol: str, scan_date: pd.Timestamp, rs_bm_df: pd.DataFrame | None = None) -> dict:
     """
     Run the trend-template gate plus VCP/Darvas/PowerPlay/Breakout detection
-    as-of scan_date, one download shared by all 4 methods. Never raises.
+    as-of scan_date, one download shared by all 4 methods (and, if rs_bm_df is
+    given, by the RS calculation too — no extra download). Never raises.
     """
     try:
         fetched = fetch_stock_asof(symbol, scan_date)
@@ -226,11 +278,15 @@ def scan_one_stock(symbol: str, scan_date: pd.Timestamp) -> dict:
             },
         }
 
-        return {
+        result = {
             "symbol": symbol, "error": None,
             "entry_date": df.index[-1], "entry_price": float(df["Close"].iloc[-1]),
             "methods": methods,
         }
+        if rs_bm_df is not None:
+            bm_slice = rs_bm_df[rs_bm_df.index <= scan_date]
+            result["rs"] = compute_rs(symbol, df, bm_slice)
+        return result
     except Exception as e:
         return {"symbol": symbol, "error": f"{type(e).__name__}: {e}"}
 
@@ -814,11 +870,508 @@ def run_full_backtest(resume: bool = True):
 
 
 # ─────────────────────────────────────────────
+# SECTOR-ROTATION / RS-RANKED SELECTION
+#
+# A second, independent comparison: instead of buying every qualifier from
+# every method (as run_full_backtest does), each week first ranks sectors
+# (yfinance `industry`) by mean RS across ALL 501 stocks (not just
+# qualifiers) and keeps only stocks in the top TOP_SECTOR_COUNT sectors. All
+# 3 cases share that same sector filter; they differ only in which method(s)
+# a stock must ALSO match to enter the week's top TOP_N_PER_WEEK buys —
+# see CASE_METHOD_FILTER for the exact definitions (any method with a
+# cross-method bonus / VCP-only / Power-Play-only, each ranked by RS).
+# Both re-entry policies (POLICIES) are still run for each case, so this
+# produces 3 cases x 2 policies = 6 trade books.
+# ─────────────────────────────────────────────
+def fetch_sector_info(symbol: str) -> dict:
+    """One yfinance .info lookup. Falls back to 'Unknown' on any failure."""
+    try:
+        info = yf.Ticker(symbol).info
+        return {"sector": info.get("sector") or "Unknown",
+                "industry": info.get("industry") or "Unknown"}
+    except Exception:
+        return {"sector": "Unknown", "industry": "Unknown"}
+
+
+def load_sector_cache() -> dict:
+    if os.path.exists(SECTOR_CACHE_JSON):
+        with open(SECTOR_CACHE_JSON) as f:
+            return json.load(f)
+    return {}
+
+
+def build_sector_map(universe: list) -> dict:
+    """
+    Returns {symbol: {"sector":..., "industry":...}}. Cached to disk — sector
+    classification doesn't change week to week, so this is fetched at most
+    once per symbol across the whole backtest (and across separate runs).
+    """
+    cache = load_sector_cache()
+    missing = [s for s in universe if s not in cache]
+    if missing:
+        print(f"  Fetching sector/industry info for {len(missing)} symbols (one-time, cached)...")
+        with ThreadPoolExecutor(max_workers=8) as ex:
+            futures = {ex.submit(fetch_sector_info, s): s for s in missing}
+            done = 0
+            for fut in as_completed(futures):
+                sym = futures[fut]
+                cache[sym] = fut.result()
+                done += 1
+                if done % 100 == 0:
+                    print(f"    ...{done}/{len(missing)}")
+        with open(SECTOR_CACHE_JSON, "w") as f:
+            json.dump(cache, f, indent=2)
+        print(f"  Sector cache saved -> {SECTOR_CACHE_JSON}  ({len(cache)} symbols total)")
+    return cache
+
+
+_RS_BENCHMARK_DF = None
+def get_rs_benchmark_df() -> pd.DataFrame:
+    """One shared Nifty 50 download spanning the whole backtest + RS lookback."""
+    global _RS_BENCHMARK_DF
+    if _RS_BENCHMARK_DF is None:
+        df = yf.download(Benchmark.SYMBOLS["NSE"], start=RS_HISTORY_START,
+                          end=HOLD_END_DATE + timedelta(days=1), progress=False, auto_adjust=True)
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = df.columns.get_level_values(0)
+        _RS_BENCHMARK_DF = df.dropna(subset=["Close"])
+    return _RS_BENCHMARK_DF
+
+
+def rank_sectors(scan_results: dict, sector_map: dict) -> list:
+    """Mean RS per sector across ALL scanned stocks (not just qualifiers). Returns
+    [(sector, mean_rs, count), ...] sorted best-first, sectors with < MIN_SECTOR_SIZE
+    valid-RS members excluded."""
+    buckets = defaultdict(list)
+    for sym, r in scan_results.items():
+        if r.get("error") or r.get("rs") is None:
+            continue
+        sec = sector_map.get(sym, {}).get("industry", "Unknown")
+        if sec == "Unknown":
+            continue
+        buckets[sec].append(r["rs"])
+    stats = [(sec, sum(vals) / len(vals), len(vals))
+             for sec, vals in buckets.items() if len(vals) >= MIN_SECTOR_SIZE]
+    stats.sort(key=lambda x: x[1], reverse=True)
+    return stats
+
+
+def build_candidate_pool(scan_results: dict, sector_map: dict, case: str, top_sectors: list) -> list:
+    """
+    Candidates restricted to that week's top TOP_SECTOR_COUNT sectors (all 3
+    cases share this filter — see CASE_METHOD_FILTER). If the case's method
+    filter is None, any qualifying method counts and the score rewards
+    cross-method agreement (RS + MULTI_METHOD_BONUS per extra method match).
+    If the filter names one method, only stocks where THAT method qualifies
+    are included, scored by RS alone. Returns candidates sorted best-first.
+    """
+    method_filter = CASE_METHOD_FILTER[case]
+    top_sector_names = {s for s, _, _ in top_sectors}
+    candidates = []
+    for sym, r in scan_results.items():
+        if r.get("error"):
+            continue
+        sector = sector_map.get(sym, {}).get("industry", "Unknown")
+        if sector not in top_sector_names:
+            continue
+        matched = [m for m in METHODS if r["methods"][m]["qualifies"]]
+        rs = r.get("rs")
+        if method_filter is None:
+            if not matched:
+                continue
+            score = (rs or 0.0) + MULTI_METHOD_BONUS * (len(matched) - 1)
+        else:
+            if method_filter not in matched:
+                continue
+            score = rs or 0.0
+        candidates.append({"symbol": sym, "matched_methods": matched, "rs": rs,
+                            "sector": sector, "score": round(score, 2)})
+    candidates.sort(key=lambda c: c["score"], reverse=True)
+    return candidates
+
+
+def build_trade_record_rs(symbol: str, case: str, policy: str, scan_date: pd.Timestamp,
+                           ec: dict, cand: dict) -> dict:
+    """Like build_trade_record(), plus the selection metadata (rs, sector, matched methods, score)."""
+    entry_price = ec["entry_price"]
+    entry_date  = ec["entry_date"]
+    shares      = ec["shares"]
+    events      = ec["events"]
+    position_value = round(entry_price * shares, 2)
+
+    proceeds    = sum(e["shares"] * e["price"] for e in events)
+    pnl_dollars = round(proceeds - position_value, 2)
+    pnl_pct     = round(100 * pnl_dollars / position_value, 2) if position_value else 0.0
+
+    slots = (events + [None, None, None])[:3]
+
+    def slot(i, field):
+        e = slots[i]
+        if e is None:
+            return None
+        return round(e[field], 2) if field == "price" else e[field]
+
+    return {
+        "case": case, "policy": policy,
+        "symbol": symbol, "scan_date": scan_date, "entry_date": entry_date,
+        "entry_price": round(entry_price, 2), "shares": shares, "position_value": position_value,
+        "matched_methods": ",".join(cand["matched_methods"]), "num_methods": len(cand["matched_methods"]),
+        "rs": cand["rs"], "sector": cand["sector"], "score": cand["score"],
+        "exit_1_date": slot(0, "date"), "exit_1_price": slot(0, "price"),
+        "exit_1_shares": slot(0, "shares"), "exit_1_reason": slot(0, "reason"),
+        "exit_2_date": slot(1, "date"), "exit_2_price": slot(1, "price"),
+        "exit_2_shares": slot(1, "shares"), "exit_2_reason": slot(1, "reason"),
+        "exit_3_date": slot(2, "date"), "exit_3_price": slot(2, "price"),
+        "exit_3_shares": slot(2, "shares"), "exit_3_reason": slot(2, "reason"),
+        "total_pnl_dollars": pnl_dollars, "total_pnl_pct": pnl_pct,
+        "exit_reason_summary": classify_exit_summary(events),
+        "final_exit_date": events[-1]["date"] if events else entry_date,
+    }
+
+
+def new_state_rs() -> dict:
+    return {c: {p: [] for p in POLICIES} for c in CASES}
+
+
+def run_friday_scan_rs(scan_date: pd.Timestamp, universe: list, sector_map: dict, state: dict) -> tuple:
+    """
+    One shared scan (all 4 methods + RS) per week, then two independent
+    candidate pools (sector-filtered vs not) x 2 re-entry policies, each
+    capped at TOP_N_PER_WEEK new buys. Returns (week_rows, sector_ranking).
+    """
+    print(f"\n{'='*70}\n  SCANNING {scan_date.date()}  ({len(universe)} stocks)\n{'='*70}")
+
+    rs_bm_df = get_rs_benchmark_df()
+    scan_results, errors = {}, 0
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        futures = {ex.submit(scan_one_stock, s, scan_date, rs_bm_df): s for s in universe}
+        for fut in as_completed(futures):
+            sym = futures[fut]
+            try:
+                r = fut.result()
+            except Exception as e:
+                r = {"symbol": sym, "error": str(e)}
+            if r.get("error"):
+                errors += 1
+            else:
+                scan_results[sym] = r
+    print(f"  Downloaded OK: {len(scan_results)}/{len(universe)}  (errors: {errors})")
+
+    top_sectors = rank_sectors(scan_results, sector_map)
+    print(f"  Top {TOP_SECTOR_COUNT} sectors this week: "
+          + ", ".join(f"{s} (RS {rs:+.1f}, n={n})" for s, rs, n in top_sectors[:TOP_SECTOR_COUNT]))
+
+    # Build both candidate pools once (shared across policies)
+    pools = {case: build_candidate_pool(scan_results, sector_map, case, top_sectors) for case in CASES}
+
+    # Which symbols are buyable this week, per (case, policy), before the top-N cut
+    buy_plan = {}
+    need_exit_data = set()
+    for case in CASES:
+        for policy in POLICIES:
+            trades_list = state[case][policy]
+            open_syms = set()
+            if policy == "reentry_after_close":
+                open_syms = {t["symbol"] for t in trades_list if t["final_exit_date"] > scan_date}
+            buyable = [c for c in pools[case] if c["symbol"] not in open_syms][:TOP_N_PER_WEEK]
+            buy_plan[(case, policy)] = buyable
+            need_exit_data.update(c["symbol"] for c in buyable)
+
+    exit_cache = {}
+    skipped_price = 0
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        futures = {}
+        for sym in need_exit_data:
+            r = scan_results[sym]
+            entry_price = r["entry_price"]
+            shares = math.floor(POSITION_SIZE / entry_price) if entry_price > 0 else 0
+            if shares <= 0:
+                skipped_price += 1
+                continue
+            fut = ex.submit(fetch_price_history, sym, r["entry_date"], HOLD_END_DATE)
+            futures[fut] = (sym, r, shares)
+
+        for fut in as_completed(futures):
+            sym, r, shares = futures[fut]
+            try:
+                fetched = fut.result()
+                if fetched["error"]:
+                    print(f"    EXIT-DATA ERROR {sym}: {fetched['error']}")
+                    continue
+                events = simulate_exit(shares, r["entry_price"], r["entry_date"], fetched["df"], HOLD_END_DATE)
+                exit_cache[sym] = {"events": events, "shares": shares,
+                                    "entry_price": r["entry_price"], "entry_date": r["entry_date"]}
+            except Exception as e:
+                print(f"    EXIT-SIM ERROR {sym}: {type(e).__name__}: {e}")
+
+    if skipped_price:
+        print(f"  Skipped {skipped_price} symbol(s): entry price too high for a Rs.10,000 position")
+
+    week_rows = []
+    print(f"\n  --- Week of {scan_date.date()} summary (case / policy) ---")
+    for case in CASES:
+        for policy in POLICIES:
+            new_trades = []
+            for cand in buy_plan[(case, policy)]:
+                ec = exit_cache.get(cand["symbol"])
+                if ec is None:
+                    continue
+                new_trades.append(build_trade_record_rs(cand["symbol"], case, policy, scan_date, ec, cand))
+            state[case][policy].extend(new_trades)
+            total_deployed = round(sum(t["position_value"] for t in new_trades), 2)
+            portfolio_value = round(sum(
+                (t["exit_1_price"] or 0) * (t["exit_1_shares"] or 0) +
+                (t["exit_2_price"] or 0) * (t["exit_2_shares"] or 0) +
+                (t["exit_3_price"] or 0) * (t["exit_3_shares"] or 0)
+                for t in new_trades), 2)
+            pnl_dollars = round(portfolio_value - total_deployed, 2)
+            pnl_pct = round(100 * pnl_dollars / total_deployed, 2) if total_deployed else 0.0
+            row = {"scan_date": scan_date, "case": case, "policy": policy,
+                   "candidates": len(pools[case]), "stocks_bought": len(new_trades),
+                   "total_deployed": total_deployed, "portfolio_value_apr30": portfolio_value,
+                   "pnl_dollars": pnl_dollars, "pnl_pct": pnl_pct}
+            week_rows.append(row)
+            print(f"    {case:18s} {policy:20s}  candidates={row['candidates']:3d}  "
+                  f"bought={row['stocks_bought']:3d}  deployed=Rs.{total_deployed:>10,.0f}  "
+                  f"pnl={pnl_pct:+6.2f}%")
+
+    sector_row = {"scan_date": scan_date,
+                  "top_sectors": "; ".join(f"{s} (RS {rs:+.1f}, n={n})" for s, rs, n in top_sectors[:TOP_SECTOR_COUNT])}
+    return week_rows, sector_row
+
+
+def save_checkpoint_rs(completed_fridays: list, state: dict, weekly_rows: list, sector_rows: list) -> None:
+    data = {
+        "completed_fridays": [d.strftime("%Y-%m-%d") for d in completed_fridays],
+        "state": state, "weekly_rows": weekly_rows, "sector_rows": sector_rows,
+    }
+    with open(CHECKPOINT_JSON_SECTOR, "w") as f:
+        json.dump(data, f, default=_json_default, indent=2)
+    print(f"  Checkpoint saved -> {CHECKPOINT_JSON_SECTOR}")
+
+
+def load_checkpoint_rs():
+    if not os.path.exists(CHECKPOINT_JSON_SECTOR):
+        return [], new_state_rs(), [], []
+    with open(CHECKPOINT_JSON_SECTOR) as f:
+        data = json.load(f)
+
+    date_fields = ("scan_date", "entry_date", "final_exit_date",
+                   "exit_1_date", "exit_2_date", "exit_3_date")
+    state = new_state_rs()
+    saved_state = data.get("state", {})
+    for case in CASES:
+        for policy in POLICIES:
+            trades_list = saved_state.get(case, {}).get(policy, [])
+            for t in trades_list:
+                for k in date_fields:
+                    if t.get(k):
+                        t[k] = pd.Timestamp(t[k])
+            state[case][policy] = trades_list
+
+    weekly_rows = data.get("weekly_rows", [])
+    for w in weekly_rows:
+        w["scan_date"] = pd.Timestamp(w["scan_date"])
+    sector_rows = data.get("sector_rows", [])
+    for s in sector_rows:
+        s["scan_date"] = pd.Timestamp(s["scan_date"])
+
+    completed = [pd.Timestamp(d) for d in data.get("completed_fridays", [])]
+    return completed, state, weekly_rows, sector_rows
+
+
+def build_comparison_rows_rs(state: dict, spy_pnl_pct: float) -> list:
+    rows = []
+    for case in CASES:
+        for policy in POLICIES:
+            trades = state[case][policy]
+            tot = overall_totals(trades)
+            win_rate = round(100 * sum(1 for t in trades if t["total_pnl_pct"] > 0) / len(trades), 2) if trades else 0.0
+            avg_days = round(sum((t["final_exit_date"] - t["entry_date"]).days for t in trades) / len(trades), 1) if trades else 0.0
+            rows.append({
+                "case": case, "policy": policy, "trades": len(trades),
+                "invested": tot["invested"], "returned": tot["returned"],
+                "pnl_dollars": tot["pnl"], "pnl_pct": tot["pnl_pct"],
+                "win_rate": win_rate, "avg_days_held": avg_days,
+                "nifty50_pct": spy_pnl_pct, "alpha": round(tot["pnl_pct"] - spy_pnl_pct, 2),
+            })
+    rows.sort(key=lambda r: r["pnl_pct"], reverse=True)
+    return rows
+
+
+def build_excel_report_rs(state: dict, weekly_rows: list, sector_rows: list, spy_pnl_pct: float):
+    trades = [t for case in CASES for policy in POLICIES for t in state[case][policy]]
+
+    df_comparison = pd.DataFrame(build_comparison_rows_rs(state, spy_pnl_pct))
+
+    trade_cols = ["case", "policy", "symbol", "scan_date", "entry_date", "entry_price", "shares",
+                  "position_value", "matched_methods", "num_methods", "rs", "sector", "score",
+                  "exit_1_date", "exit_1_price", "exit_1_shares", "exit_1_reason",
+                  "exit_2_date", "exit_2_price", "exit_2_shares", "exit_2_reason",
+                  "exit_3_date", "exit_3_price", "exit_3_shares", "exit_3_reason",
+                  "total_pnl_dollars", "total_pnl_pct", "exit_reason_summary"]
+    df_trades = pd.DataFrame([{k: t.get(k) for k in trade_cols} for t in trades])
+
+    df_weekly = pd.DataFrame([
+        {**w, "spy_pnl_pct": spy_pnl_pct, "alpha": round(w["pnl_pct"] - spy_pnl_pct, 2)}
+        for w in weekly_rows
+    ])
+    df_sectors = pd.DataFrame(sector_rows)
+
+    exit_rows = []
+    for case in CASES:
+        for policy in POLICIES:
+            sub_all = state[case][policy]
+            for cat in EXIT_CATEGORIES:
+                sub = [t for t in sub_all if t["exit_reason_summary"] == cat]
+                count = len(sub)
+                avg_pnl = round(sum(t["total_pnl_pct"] for t in sub) / count, 2) if count else 0.0
+                label = "full_held_to_apr30" if cat == "full_held" else cat
+                exit_rows.append({"case": case, "policy": policy, "exit_reason": label,
+                                   "count": count, "avg_pnl_pct": avg_pnl})
+    df_exit = pd.DataFrame(exit_rows)
+
+    with pd.ExcelWriter(RESULTS_XLSX_SECTOR, engine="openpyxl") as writer:
+        df_comparison.to_excel(writer, index=False, sheet_name="Comparison Summary")
+        df_trades.to_excel(writer, index=False, sheet_name="All Trades")
+        df_weekly.to_excel(writer, index=False, sheet_name="Weekly Summary")
+        df_sectors.to_excel(writer, index=False, sheet_name="Sector Rankings")
+        df_exit.to_excel(writer, index=False, sheet_name="Exit Analysis")
+
+    print(f"\n  Results saved -> {RESULTS_XLSX_SECTOR}")
+    return df_comparison, df_trades, df_weekly, df_sectors, df_exit
+
+
+def print_terminal_summary_rs(state: dict, spy_pnl_pct: float) -> None:
+    print("\n" + "=" * 70)
+    print(f"  SECTOR/RS-SELECTION BACKTEST RESULTS - {BENCHMARK_START.date()} to {HOLD_END_DATE.date()}")
+    print("=" * 70)
+
+    trades = [t for case in CASES for policy in POLICIES for t in state[case][policy]]
+    if not trades:
+        print("  No trades were opened.")
+        print("=" * 70)
+        return
+
+    rows = build_comparison_rows_rs(state, spy_pnl_pct)
+    print(f"  Nifty 50 benchmark: {spy_pnl_pct:+.2f}%\n")
+    print(f"  {'CASE':18s} {'POLICY':20s} {'TRADES':>7s} {'INVESTED':>14s} "
+          f"{'P&L %':>8s} {'ALPHA':>8s} {'WIN%':>7s}")
+    print("  " + "-" * 84)
+    for r in rows:
+        print(f"  {r['case']:18s} {r['policy']:20s} {r['trades']:7d} "
+              f"Rs.{r['invested']:>10,.0f} {r['pnl_pct']:>+7.2f}% {r['alpha']:>+7.2f} {r['win_rate']:>6.1f}%")
+
+    traded_rows = [r for r in rows if r["trades"] > 0]
+    if traded_rows:
+        best = traded_rows[0]
+        print(f"\n  Best combination: {best['case']} / {best['policy']}  "
+              f"({best['pnl_pct']:+.2f}% P&L, alpha {best['alpha']:+.2f}pp, {best['trades']} trades)")
+
+    tot = overall_totals(trades)
+    print("\n" + "-" * 70)
+    print("  MONEY SUMMARY (all cases & policies combined)")
+    print("-" * 70)
+    result_word = "PROFIT" if tot["pnl"] >= 0 else "LOSS"
+    print(f"  You invested  : Rs.{tot['invested']:,.2f}")
+    print(f"  You got back  : Rs.{tot['returned']:,.2f}")
+    print(f"  {result_word:<14}: Rs.{abs(tot['pnl']):,.2f}")
+    print(f"  Overall, you {'made' if tot['pnl'] >= 0 else 'lost'} money: "
+          f"{tot['pnl_pct']:+.2f}% on your invested capital")
+    print("-" * 70)
+    print("=" * 70)
+
+
+def test_sector_fetch():
+    print("SECTOR TEST - fetch sector/industry for 15 stocks")
+    universe = get_symbols()[:15]
+    sector_map = build_sector_map(universe)
+    for s in universe:
+        print(f"  {s:15s} sector={sector_map[s]['sector']:25s} industry={sector_map[s]['industry']}")
+
+
+def test_sector_mini():
+    print(f"SECTOR MINI SCAN - 40 stocks, {SCAN_FRIDAYS[0].date()} only, both cases/policies")
+    universe = get_symbols()[:40]
+    sector_map = build_sector_map(universe)
+    state = new_state_rs()
+    week_rows, sector_row = run_friday_scan_rs(SCAN_FRIDAYS[0], universe, sector_map, state)
+    print(f"\n  Sector ranking this week: {sector_row['top_sectors']}")
+    for case in CASES:
+        for policy in POLICIES:
+            print(f"\n  {case} / {policy}:")
+            for t in state[case][policy]:
+                print(f"    {t['symbol']:15s} methods={t['matched_methods']:20s} rs={t['rs']} "
+                      f"sector={t['sector']:25s} score={t['score']:.1f}  pnl={t['total_pnl_pct']:+.2f}%")
+    return state, week_rows
+
+
+def print_checklist_rs():
+    print("=" * 70)
+    print("  SECTOR/RS-SELECTION BACKTEST - PRE-RUN CHECKLIST")
+    print("=" * 70)
+    print(f"  Scan Fridays      : {SCAN_FRIDAYS[0].date()} .. {SCAN_FRIDAYS[-1].date()}  ({len(SCAN_FRIDAYS)} weeks)")
+    print(f"  Hold/exit through : {HOLD_END_DATE.date()}")
+    print("  Universe          : NSE 500 (data/universe.get_symbols())")
+    print(f"  Sector filter     : top {TOP_SECTOR_COUNT} sectors by mean RS each week (all 3 cases share this)")
+    print(f"  Sector = yfinance 'industry' field (no thematic/AI-theme data source exists)")
+    print("  Cases compared    :")
+    print(f"    top_sector_all_methods     any of VCP(A/B)/Darvas/PowerPlay/Breakout qualifies,")
+    print(f"                               scored by RS + {MULTI_METHOD_BONUS:.0f}pts per extra method match")
+    print(f"    top_sector_vcp_only        must be a VCP (grade A/B) qualifier, scored by RS alone")
+    print(f"    top_sector_powerplay_only  must be a Power Play qualifier, scored by RS alone")
+    print(f"  Buys per week     : top {TOP_N_PER_WEEK} candidates, per (case, policy)")
+    print(f"  Re-entry policies : {', '.join(POLICIES)}")
+    print(f"  Darvas thresholds : loosened at runtime (see module docstring / top of file)")
+    print(f"  Position size     : Rs.{POSITION_SIZE:,.0f} per stock (floor(size/entry_price) shares)")
+    print(f"  Stop loss         : -{(1-SL_MULT)*100:.0f}% ratcheting (breakeven after PT1, PT1-price after PT2)")
+    print("  Profit target 1/2 : +20% -> sell 50%, +40% -> sell 50% of remainder")
+    print(f"  Hard close        : {HOLD_END_DATE.date()}")
+    print(f"  Benchmark         : Nifty 50 (^NSEI), {BENCHMARK_START.date()} -> {HOLD_END_DATE.date()}")
+    print(f"  Output workbook   : {RESULTS_XLSX_SECTOR}")
+    print(f"  Checkpoint file   : {CHECKPOINT_JSON_SECTOR}")
+    print("=" * 70)
+
+
+def run_sector_backtest(resume: bool = True):
+    print_checklist_rs()
+    universe = get_symbols()
+    print(f"  Universe size: {len(universe)} symbols\n")
+
+    sector_map = build_sector_map(universe)
+
+    if resume:
+        completed, state, weekly_rows, sector_rows = load_checkpoint_rs()
+        if completed:
+            print(f"  Resuming from checkpoint - already completed: "
+                  f"{[d.strftime('%Y-%m-%d') for d in completed]}")
+    else:
+        completed, state, weekly_rows, sector_rows = [], new_state_rs(), [], []
+
+    for scan_date in SCAN_FRIDAYS:
+        if scan_date in completed:
+            print(f"  Skipping {scan_date.date()} (already in checkpoint)")
+            continue
+        week_rows, sector_row = run_friday_scan_rs(scan_date, universe, sector_map, state)
+        weekly_rows.extend(week_rows)
+        sector_rows.append(sector_row)
+        completed.append(scan_date)
+        save_checkpoint_rs(completed, state, weekly_rows, sector_rows)
+
+    print("\n  Computing benchmark...")
+    spy_pnl_pct = compute_benchmark()
+
+    build_excel_report_rs(state, weekly_rows, sector_rows, spy_pnl_pct)
+    print_terminal_summary_rs(state, spy_pnl_pct)
+
+
+# ─────────────────────────────────────────────
 # ENTRY POINT
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Multi-setup weekly-scan backtest engine")
-    parser.add_argument("--mode", choices=["fetch_test", "exit_test", "mini_scan", "full"],
+    parser.add_argument("--mode", choices=["fetch_test", "exit_test", "mini_scan", "full",
+                                            "sector_test", "sector_mini", "sector_full"],
                          required=True)
     parser.add_argument("--no-resume", action="store_true",
                          help="ignore any existing checkpoint and start over")
@@ -833,3 +1386,10 @@ if __name__ == "__main__":
         test_mini_scan()
     elif args.mode == "full":
         run_full_backtest(resume=not args.no_resume)
+    elif args.mode == "sector_test":
+        test_sector_fetch()
+    elif args.mode == "sector_mini":
+        print_checklist_rs()
+        test_sector_mini()
+    elif args.mode == "sector_full":
+        run_sector_backtest(resume=not args.no_resume)
