@@ -22,6 +22,11 @@ TELEGRAM_CHAT_ID = "YOUR_CHAT_ID_HERE"
 MARKET_OPEN_TIME  = "06:00"   # ~30 mins after NSE opens  (Germany time)
 MARKET_CLOSE_TIME = "11:00"   # ~30 mins before NSE closes (Germany time)
 
+# live_picks.py — daily top-10 watchlist alert (top_sector_all_methods /
+# top_sector_vcp_only / top_sector_powerplay_only). Runs once a day, shortly
+# after the market-close scan above, as its own separate Telegram message.
+LIVE_PICKS_TIME = "11:10"
+
 # Timezone (Germany)
 TIMEZONE = "Europe/Berlin"
 

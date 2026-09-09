@@ -966,7 +966,7 @@ def build_candidate_pool(scan_results: dict, sector_map: dict, case: str, top_se
     are included, scored by RS alone. Returns candidates sorted best-first.
     """
     method_filter = CASE_METHOD_FILTER[case]
-    top_sector_names = {s for s, _, _ in top_sectors}
+    top_sector_names = {s for s, _, _ in top_sectors[:TOP_SECTOR_COUNT]}
     candidates = []
     for sym, r in scan_results.items():
         if r.get("error"):

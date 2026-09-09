@@ -32,18 +32,18 @@ class TelegramNotifier:
             }
             response = requests.post(url, json=payload, timeout=10)
             if response.status_code != 200:
-                print(f"❌ Telegram send_message failed: {response.status_code} {response.text}")
+                print(f"[FAIL] Telegram send_message failed: {response.status_code} {response.text}")
                 return False
             return True
         except Exception as e:
-            print(f"❌ Telegram message error: {e}")
+            print(f"[FAIL] Telegram message error: {e}")
             return False
     
     def send_file(self, file_path: str, caption: str = "") -> bool:
         """Send file (Excel, CSV, etc.) to Telegram."""
         try:
             if not os.path.exists(file_path):
-                print(f"❌ File not found: {file_path}")
+                print(f"[FAIL] File not found: {file_path}")
                 return False
             
             url = f"{self.base_url}/sendDocument"
@@ -56,11 +56,11 @@ class TelegramNotifier:
                 }
                 response = requests.post(url, files=files, data=payload, timeout=30)
                 if response.status_code != 200:
-                    print(f"❌ Telegram send_file failed: {response.status_code} {response.text}")
+                    print(f"[FAIL] Telegram send_file failed: {response.status_code} {response.text}")
                     return False
                 return True
         except Exception as e:
-            print(f"❌ Telegram file upload error: {e}")
+            print(f"[FAIL] Telegram file upload error: {e}")
             return False
     
     def get_updates(self, offset: int | None = None, timeout: int = 5):
@@ -72,15 +72,15 @@ class TelegramNotifier:
                 params["offset"] = offset
             response = requests.get(url, params=params, timeout=timeout + 5)
             if response.status_code != 200:
-                print(f"❌ Telegram get_updates failed: {response.status_code} {response.text}")
+                print(f"[FAIL] Telegram get_updates failed: {response.status_code} {response.text}")
                 return None
             data = response.json()
             if not data.get("ok"):
-                print(f"❌ Telegram get_updates returned error: {data}")
+                print(f"[FAIL] Telegram get_updates returned error: {data}")
                 return None
             return data.get("result", [])
         except Exception as e:
-            print(f"❌ Telegram get_updates error: {e}")
+            print(f"[FAIL] Telegram get_updates error: {e}")
             return None
 
     def send_scan_report(self, results: List[Dict], output_file: str = None, 
@@ -137,17 +137,17 @@ class TelegramNotifier:
         
         # Send message
         if self.send_message(message):
-            print("✓ Main report sent to Telegram")
+            print("[OK] Main report sent to Telegram")
         else:
-            print("❌ Failed to send main report")
+            print("[FAIL] Failed to send main report")
         
         # Send Excel file if available
         if output_file and os.path.exists(output_file):
             caption = f"📈 VCP Scan Results - {timestamp}"
             if self.send_file(output_file, caption):
-                print("✓ Excel file sent to Telegram")
+                print("[OK] Excel file sent to Telegram")
             else:
-                print("❌ Failed to send Excel file")
+                print("[FAIL] Failed to send Excel file")
     
     def send_alert(self, title: str, message: str):
         """Send quick alert message."""
